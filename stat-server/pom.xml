@@ -22,7 +22,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>ru.yandex</groupId>
+      <groupId>ru.practicum</groupId>
       <artifactId>stat-dto</artifactId>
       <version>1</version>
     </dependency>
