@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHitInDto;
 import ru.practicum.dto.EndpointHitOutDto;
-import ru.practicum.stats.model.EndpointHit;
 import ru.practicum.stats.service.StatService;
 
 import java.net.URLDecoder;
