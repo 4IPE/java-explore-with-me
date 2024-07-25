@@ -27,7 +27,7 @@ public class EwmServiceController {
     @GetMapping("/stats")
     public ResponseEntity<List<EndpointHitOutDto>> getStats(@RequestParam(name = "start") String start,
                                                             @RequestParam(name = "end") String end,
-                                                            @RequestParam(name = "uris",required = false) List<String> uris,
+                                                            @RequestParam(name = "uris", required = false) List<String> uris,
                                                             @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique) {
         return statClient.getStats(start, end, uris, unique);
     }

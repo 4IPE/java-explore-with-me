@@ -35,7 +35,7 @@ public class StatServerController {
     @GetMapping("/stats")
     public List<EndpointHitOutDto> getStats(@RequestParam(name = "start") String start,
                                             @RequestParam(name = "end") String end,
-                                            @RequestParam(name = "uris",required = false) List<String> uris,
+                                            @RequestParam(name = "uris", required = false) List<String> uris,
                                             @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique) {
         String decodeStart = URLDecoder.decode(start, StandardCharsets.UTF_8);
         String decodeEnd = URLDecoder.decode(end, StandardCharsets.UTF_8);
