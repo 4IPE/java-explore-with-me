@@ -11,7 +11,6 @@ import ru.practicum.dto.EndpointHitOutDto;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -41,7 +40,7 @@ public class StatClient {
                 baseUrl,
                 encodedStart,
                 encodedEnd,
-                uris!=null?String.join(",", uris):"",
+                uris != null ? String.join(",", uris) : "",
                 unique != null ? unique.toString() : "false");
 
         HttpHeaders headers = new HttpHeaders();
