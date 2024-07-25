@@ -35,13 +35,16 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional(readOnly = true)
     public List<EndpointHitOutDto> getStat(String start, String end, List<String> uri, Boolean unq) {
-        System.out.println(start);
         LocalDateTime startFormat = LocalDateTime.parse(start, FORMATTER);
         LocalDateTime endFormat = LocalDateTime.parse(end, FORMATTER);
-        List<EndpointHit> endpointHits = uri.stream()
-                .map(url -> statRepository.findByUri(url))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+        List<EndpointHit> endpointHits = statRepository.findAll();
+        if (uri != null && !uri.isEmpty()) {
+            endpointHits = uri.stream()
+                    .map(url -> statRepository.findByUri(url))
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+        }
+
 
         List<EndpointHitOutDto> result = endpointHits.stream()
                 .filter(hit -> hit.getTimestamp().isAfter(startFormat) && hit.getTimestamp().isBefore(endFormat))
