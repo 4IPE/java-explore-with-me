@@ -1,24 +1,24 @@
 version: '3.1'
 services:
 
-  stat-server:
-    build: stat-server
-    image: stat-server-img
-    container_name: stat-server-con
+  stats-server:
+    build: stats-server
+    image: stats-server-img
+    container_name: stats-server-con
     ports:
       - "9090:9090"
 
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/stat
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stat
       - SPRING_DATASOURCE_USERNAME=dbuser
       - SPRING_DATASOURCE_PASSWORD=12345
     depends_on:
-      - stat-db
+      - stats-db
     restart: "no"
 
-  stat-db:
+  stats-db:
     image: postgres:14-alpine
-    container_name: stat-db-con
+    container_name: stats-db-con
     ports:
       - "6542:5432"
     environment:
@@ -31,7 +31,7 @@ services:
         interval: 5s
         retries: 10
     volumes:
-        - stat-db-data:/var/lib/postgresql/data
+        - stats-db-data:/var/lib/postgresql/data
 
   ewm-service:
     build: ewm-service
@@ -40,7 +40,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - stat-server
+      - stats-server
     restart: "no"
 
   ewm-db:
@@ -60,5 +60,5 @@ services:
     volumes:
       - ewm-db-data:/var/lib/postgresql/data
 volumes:
-  stat-db-data:
+  stats-db-data:
   ewm-db-data:
