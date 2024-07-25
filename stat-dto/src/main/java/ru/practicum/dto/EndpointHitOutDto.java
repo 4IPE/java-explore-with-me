@@ -1,4 +1,4 @@
-package ru.practicum.modelDto;
+package ru.practicum.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EndpointHitOutDto {
-    private  String app;
+    private String app;
     private String uri;
     private Long hits;
 }

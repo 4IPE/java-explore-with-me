@@ -3,21 +3,22 @@ services:
 
   stat-server:
     build: stat-server
-    image: stat-server
-    container_name: stat-server
+    image: stat-server-img
+    container_name: stat-server-con
     ports:
       - "9090:9090"
+
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/shareit
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/stat
       - SPRING_DATASOURCE_USERNAME=dbuser
       - SPRING_DATASOURCE_PASSWORD=12345
     depends_on:
       - stat-db
-    restart: on-failure
+    restart: no
 
   stat-db:
     image: postgres:14-alpine
-    container_name: stat-db
+    container_name: stat-db-con
     ports:
       - "6542:5432"
     environment:
@@ -34,17 +35,17 @@ services:
 
   ewm-service:
     build: ewm-service
-    image: ewm-service
-    container_name: ewm-service
+    image: ewm-service-img
+    container_name: ewm-service-con
     ports:
       - "8080:8080"
     depends_on:
       - stat-server
-    restart: on-failure
+    restart: no
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: ewm-db
+    container_name: ewm-db-con
     ports:
       - "6541:5432"
     environment:

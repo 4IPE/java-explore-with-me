@@ -1,7 +1,7 @@
-package ru.practicum.service;
+package ru.practicum.stats.service;
 
-import ru.practicum.modelDto.EndpointHitInDto;
-import ru.practicum.modelDto.EndpointHitOutDto;
+import ru.practicum.dto.EndpointHitInDto;
+import ru.practicum.dto.EndpointHitOutDto;
 
 import java.util.List;
 

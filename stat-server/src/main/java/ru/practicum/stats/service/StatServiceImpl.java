@@ -1,16 +1,17 @@
-package ru.practicum.service;
+package ru.practicum.stats.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.StatMapper;
-import ru.practicum.model.EndpointHit;
-import ru.practicum.modelDto.EndpointHitInDto;
-import ru.practicum.modelDto.EndpointHitOutDto;
-import ru.practicum.repository.StatRepository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.EndpointHitInDto;
+import ru.practicum.dto.EndpointHitOutDto;
+import ru.practicum.stats.mapper.StatMapper;
+import ru.practicum.stats.model.EndpointHit;
+import ru.practicum.stats.repository.StatRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,17 +19,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class StatServiceImpl implements StatService {
-    private StatRepository statRepository;
-    private StatMapper statMapper;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    @Autowired
+    private StatRepository statRepository;
+    @Autowired
+    private StatMapper statMapper;
 
     @Override
     public void addHit(EndpointHitInDto endpointHitInDto) {
-        EndpointHit endpointHit = (EndpointHit) statMapper.toEndpointHit(endpointHitInDto);
+        EndpointHit endpointHit = statMapper.toEndpointHit(endpointHitInDto);
+        endpointHit.setDateHit(LocalDateTime.parse(endpointHitInDto.getDateHit(), FORMATTER));
         statRepository.save(endpointHit);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EndpointHitOutDto> getStat(String start, String end, List<String> uri, Boolean unq) {
 
         LocalDateTime startFormat = LocalDateTime.parse(start, FORMATTER);
@@ -38,12 +43,8 @@ public class StatServiceImpl implements StatService {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        if (endpointHits == null || endpointHits.isEmpty()) {
-            return new ArrayList<>();
-        }
-
         List<EndpointHitOutDto> result = endpointHits.stream()
-                .filter(hit -> hit.getDateHit().isAfter(startFormat) || hit.getDateHit().isBefore(endFormat))
+                .filter(hit -> hit.getDateHit().isAfter(startFormat) && hit.getDateHit().isBefore(endFormat))
                 .collect(Collectors.groupingBy(
                         hit -> Arrays.asList(hit.getApp(), hit.getUri()),
                         Collectors.mapping(
@@ -66,7 +67,7 @@ public class StatServiceImpl implements StatService {
 
         if (unq) {
             result = endpointHits.stream()
-                    .filter(hit -> hit.getDateHit().isAfter(startFormat) || hit.getDateHit().isBefore(endFormat))
+                    .filter(hit -> hit.getDateHit().isAfter(startFormat) && hit.getDateHit().isBefore(endFormat))
                     .collect(Collectors.groupingBy(
                             hit -> Arrays.asList(hit.getApp(), hit.getUri()),
                             Collectors.mapping(

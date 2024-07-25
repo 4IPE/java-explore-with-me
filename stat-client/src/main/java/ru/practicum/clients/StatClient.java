@@ -5,16 +5,18 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.modelDto.EndpointHitInDto;
-import ru.practicum.modelDto.EndpointHitOutDto;
+import ru.practicum.dto.EndpointHitInDto;
+import ru.practicum.dto.EndpointHitOutDto;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
 public class StatClient {
     private final RestTemplate restTemplate;
-    private final String baseUrl = "http://localhost:9090";
+    private final String baseUrl = "http://stat-server:9090";
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StatClient() {
@@ -31,10 +33,13 @@ public class StatClient {
     }
 
     public ResponseEntity<List<EndpointHitOutDto>> getStats(String start, String end, List<String> uris, Boolean unique) {
+        String encodedStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
+        String encodedEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
+
         String url = String.format("%s/stats?start=%s&end=%s&uris=%s&unique=%s",
                 baseUrl,
-                start,
-                end,
+                encodedStart,
+                encodedEnd,
                 String.join(",", uris),
                 unique != null ? unique.toString() : "false");
 
