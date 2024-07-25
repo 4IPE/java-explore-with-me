@@ -14,7 +14,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=12345
     depends_on:
       - stat-db
-    restart: no
+    restart: "no"
 
   stat-db:
     image: postgres:14-alpine
@@ -41,7 +41,7 @@ services:
       - "8080:8080"
     depends_on:
       - stat-server
-    restart: no
+    restart: "no"
 
   ewm-db:
     image: postgres:14-alpine
