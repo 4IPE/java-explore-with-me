@@ -17,9 +17,9 @@ import java.util.List;
 @Component
 public class StatClient {
     private final RestTemplate restTemplate;
-    @Value("${server.url}")
-    private  String baseUrl;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    @Value("${server.url}")
+    private String baseUrl;
 
     public StatClient() {
         this.restTemplate = new RestTemplate();

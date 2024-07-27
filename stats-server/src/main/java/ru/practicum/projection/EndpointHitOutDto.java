@@ -7,6 +7,8 @@ import ru.practicum.stats.model.EndpointHit;
 @Projection(name = "EndpointHitProjection", types = EndpointHit.class)
 public interface EndpointHitOutDto {
     String getApp();
+
     String getUri();
+
     Long getHits();
 }
