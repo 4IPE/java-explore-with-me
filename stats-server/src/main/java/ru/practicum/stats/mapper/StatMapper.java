@@ -10,6 +10,5 @@ import ru.practicum.stats.model.EndpointHit;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = "spring")
 public interface StatMapper {
-    @Mapping(target = "timestamp", ignore = true)
     EndpointHit toEndpointHit(EndpointHitInDto endHit);
 }
