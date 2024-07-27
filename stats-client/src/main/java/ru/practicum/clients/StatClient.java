@@ -1,6 +1,7 @@
 package ru.practicum.clients;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,8 @@ import java.util.List;
 @Component
 public class StatClient {
     private final RestTemplate restTemplate;
-    private final String baseUrl = "http://stats-server:9090";
+    @Value("${server.url}")
+    private  String baseUrl;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StatClient() {
