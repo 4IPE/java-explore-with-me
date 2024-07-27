@@ -36,7 +36,7 @@ public class StatServerController {
     public List<EndpointHitOutDto> getStats(@RequestParam(name = "start") String start,
                                             @RequestParam(name = "end") String end,
                                             @RequestParam(name = "uris", required = false) List<String> uris,
-                                            @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique) {
+                                            @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
         String decodeStart = URLDecoder.decode(start, StandardCharsets.UTF_8);
         String decodeEnd = URLDecoder.decode(end, StandardCharsets.UTF_8);
         log.info("Обработка запроса на стороне сервера для получения статистики с параметрами");

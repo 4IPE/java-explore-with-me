@@ -12,9 +12,7 @@ import ru.practicum.stats.repository.StatRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class StatServiceImpl implements StatService {
     @Override
     public void addHit(EndpointHitInDto endpointHitInDto) {
         EndpointHit endpointHit = statMapper.toEndpointHit(endpointHitInDto);
-        endpointHit.setTimestamp(LocalDateTime.parse(endpointHitInDto.getTimestamp(), FORMATTER));
         statRepository.save(endpointHit);
     }
 
@@ -37,59 +34,16 @@ public class StatServiceImpl implements StatService {
     public List<EndpointHitOutDto> getStat(String start, String end, List<String> uri, Boolean unq) {
         LocalDateTime startFormat = LocalDateTime.parse(start, FORMATTER);
         LocalDateTime endFormat = LocalDateTime.parse(end, FORMATTER);
-        List<EndpointHit> endpointHits = statRepository.findAll();
-        if (uri != null && !uri.isEmpty()) {
-            endpointHits = uri.stream()
-                    .map(url -> statRepository.findByUri(url))
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-        }
-
-
-        List<EndpointHitOutDto> result = endpointHits.stream()
-                .filter(hit -> hit.getTimestamp().isAfter(startFormat) && hit.getTimestamp().isBefore(endFormat))
-                .collect(Collectors.groupingBy(
-                        hit -> Arrays.asList(hit.getApp(), hit.getUri()),
-                        Collectors.mapping(
-                                EndpointHit::getIp,
-                                Collectors.counting()
-                        )
-                ))
-                .entrySet().stream()
-                .map(entry -> {
-                    List<String> key = entry.getKey();
-                    String app = key.get(0);
-                    String uriKey = key.get(1);
-                    return new EndpointHitOutDto(
-                            app,
-                            uriKey,
-                            entry.getValue()
-                    );
-                })
-                .collect(Collectors.toList());
-
+        List<EndpointHitOutDto> result = statRepository.findAllEndpointHitsWithoutUris(startFormat, endFormat);
         if (unq) {
-            result = endpointHits.stream()
-                    .filter(hit -> hit.getTimestamp().isAfter(startFormat) && hit.getTimestamp().isBefore(endFormat))
-                    .collect(Collectors.groupingBy(
-                            hit -> Arrays.asList(hit.getApp(), hit.getUri()),
-                            Collectors.mapping(
-                                    EndpointHit::getIp,
-                                    Collectors.toSet()
-                            )
-                    ))
-                    .entrySet().stream()
-                    .map(entry -> {
-                        List<String> key = entry.getKey();
-                        String app = key.get(0);
-                        String uriKey = key.get(1);
-                        return new EndpointHitOutDto(
-                                app,
-                                uriKey,
-                                (long) entry.getValue().size()
-                        );
-                    })
-                    .collect(Collectors.toList());
+            if(uri!=null && !uri.isEmpty()){
+                result = statRepository.findUniqueEndpointHits(startFormat, endFormat, uri);
+            }
+            result = statRepository.findAllEndpointHitsWithoutUris(startFormat, endFormat);
+        }else{
+            if(uri!=null && !uri.isEmpty()){
+                result = statRepository.findAllEndpointHits(startFormat, endFormat, uri);
+            }
         }
         return result;
     }
