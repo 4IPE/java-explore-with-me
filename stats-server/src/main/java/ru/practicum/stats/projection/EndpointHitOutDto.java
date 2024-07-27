@@ -1,4 +1,4 @@
-package ru.practicum.projection;
+package ru.practicum.stats.projection;
 
 import org.springframework.data.rest.core.config.Projection;
 import ru.practicum.stats.model.EndpointHit;

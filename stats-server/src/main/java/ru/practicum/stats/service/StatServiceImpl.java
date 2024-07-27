@@ -36,10 +36,10 @@ public class StatServiceImpl implements StatService {
         LocalDateTime endFormat = LocalDateTime.parse(end, FORMATTER);
         List<EndpointHitOutDto> result = statRepository.findAllEndpointHitsWithoutUris(startFormat, endFormat);
         if (unq) {
+            result = statRepository.findUniqueEndpointHitsWithoutUris(startFormat, endFormat);
             if (uri != null && !uri.isEmpty()) {
                 result = statRepository.findUniqueEndpointHits(startFormat, endFormat, uri);
             }
-            result = statRepository.findAllEndpointHitsWithoutUris(startFormat, endFormat);
         } else {
             if (uri != null && !uri.isEmpty()) {
                 result = statRepository.findAllEndpointHits(startFormat, endFormat, uri);
