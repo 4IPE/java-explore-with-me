@@ -11,6 +11,7 @@ import ru.practicum.ewm.dto.event.EventOutDto;
 import ru.practicum.ewm.dto.event.EventUpdDto;
 import service.admin.service.EventService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class EventController {
 
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventOutDto> pathEvent(@PathVariable Long eventId,
-                                                 @RequestBody EventUpdDto eventUpdDto) {
+                                                 @Valid @RequestBody EventUpdDto eventUpdDto) {
         return ResponseEntity.ok().body(eventService.pathEvent(eventUpdDto, eventId));
     }
 }

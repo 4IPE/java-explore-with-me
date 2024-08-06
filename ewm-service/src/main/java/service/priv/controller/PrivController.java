@@ -16,6 +16,7 @@ import ru.practicum.ewm.dto.request.RequestUpdStatusDto;
 import ru.practicum.ewm.dto.request.RequestUpdStatusResultDto;
 import service.priv.service.PrivService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -52,7 +53,7 @@ public class PrivController {
     @PatchMapping("/events/{eventId}")
     public ResponseEntity<EventOutDto> pathEvent(@PathVariable Long userId,
                                                  @PathVariable Long eventId,
-                                                 @RequestBody EventUpdDto eventNew) {
+                                                 @Valid @RequestBody EventUpdDto eventNew) {
         return ResponseEntity.ok().body(privService.pathEvent(userId, eventId, eventNew));
     }
 
@@ -66,7 +67,7 @@ public class PrivController {
     @PatchMapping("/events/{eventId}/requests")
     public ResponseEntity<RequestUpdStatusResultDto> pathRequest(@PathVariable Long userId,
                                                                  @PathVariable Long eventId,
-                                                                 @RequestBody RequestUpdStatusDto requestUpdStatusDto) {
+                                                                 @Valid @RequestBody RequestUpdStatusDto requestUpdStatusDto) {
 
         return ResponseEntity.ok().body(privService.pathRequest(userId, eventId, requestUpdStatusDto));
     }

@@ -14,7 +14,7 @@ import service.model.Compilations;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/admin/сompilations")
+@RequestMapping(path = "/admin/compilations")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -29,7 +29,7 @@ public class CompilationsController {
 
     @PatchMapping("/{compId}")
     public ResponseEntity<Compilations> patchCategories(@PathVariable Long compId,
-                                                        @RequestBody CompilationsInDto compilations) {
+                                                        @Valid @RequestBody CompilationsInDto compilations) {
 
         return ResponseEntity.ok().body(compilationsService.pathCompilations(compilations, compId));
     }

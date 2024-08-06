@@ -19,12 +19,10 @@ import service.mapper.EventMapper;
 import service.mapper.LocationMapper;
 import service.mapper.RequestMapper;
 import service.model.Event;
+import service.model.Location;
 import service.model.Request;
 import service.model.User;
-import service.repository.CategoriesRepository;
-import service.repository.EventRepository;
-import service.repository.RequestRepository;
-import service.repository.UserRepository;
+import service.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,6 +46,8 @@ public class PrivServiceImpl implements PrivService {
     private RequestMapper requestMapper;
     @Autowired
     private LocationMapper locationMapper;
+    @Autowired
+    private LocationRepository locationRepository;
 
 
     @Override
@@ -63,6 +63,7 @@ public class PrivServiceImpl implements PrivService {
     public EventOutDto addEvent(EventInDto eventIn, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = eventMapper.toEvent(eventIn);
+        locationRepository.save(event.getLocation());
         event.setInitiator(user);
         event.setState(State.PENDING);
         EventOutDto eventOutDto = eventMapper.toOut(eventRepository.save(event));
@@ -98,7 +99,7 @@ public class PrivServiceImpl implements PrivService {
         event.setParticipantLimit(eventUpd.getParticipantLimit() != null ? eventUpd.getParticipantLimit() : event.getParticipantLimit());
         event.setRequestModeration(eventUpd.getRequestModeration() != null ? eventUpd.getRequestModeration() : event.getRequestModeration());
         event.setTitle(eventUpd.getTitle() != null ? eventUpd.getTitle() : event.getTitle());
-        event.setLocation(eventUpd.getLocation() != null ? locationMapper.toEntity(eventUpd.getLocation()) : event.getLocation());
+        event.setLocation(eventUpd.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpd.getLocation())) : event.getLocation());
         return eventMapper.toOut(eventRepository.save(event));
     }
 

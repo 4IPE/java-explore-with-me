@@ -31,7 +31,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Override
     public CategoriesOutDto updateCat(Long catId, CategoriesInDto categoriesInDto) {
         Categories categories = repository.findById(catId).orElseThrow(() -> new NotFound("Категория с id: " + catId + " не была нйдена"));
-        categories.setName(categoriesInDto.getName() != null ? categories.getName() : categories.getName());
+        categories.setName(categoriesInDto.getName() != null ? categoriesInDto.getName() : categories.getName());
         return mapper.toOut(repository.save(categories));
     }
 

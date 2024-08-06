@@ -15,6 +15,7 @@ import service.mapper.LocationMapper;
 import service.model.Event;
 import service.repository.CategoriesRepository;
 import service.repository.EventRepository;
+import service.repository.LocationRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class EventServiceImpl implements EventService {
     private CategoriesRepository categoriesRepository;
     @Autowired
     private LocationMapper locationMapper;
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Override
     public List<EventOutDto> getEvent(List<Long> users,
@@ -74,7 +77,8 @@ public class EventServiceImpl implements EventService {
         event.setCategories(eventUpdDto.getCategories() != null ? categoriesRepository.findById(eventUpdDto.getCategories()).orElse(event.getCategories()) : event.getCategories());
         event.setDescription(eventUpdDto.getDescription() != null ? eventUpdDto.getDescription() : event.getDescription());
         event.setEventDate(eventUpdDto.getEventDate() != null ? eventUpdDto.getEventDate() : event.getEventDate());
-        event.setLocation(eventUpdDto.getLocation() != null ? locationMapper.toEntity(eventUpdDto.getLocation()) : event.getLocation());
+        event.setLocation(eventUpdDto.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpdDto.getLocation())) : event.getLocation());
+
         event.setPaid(eventUpdDto.getPaid() != null ? eventUpdDto.getPaid() : event.getPaid());
         event.setParticipantLimit(eventUpdDto.getParticipantLimit() != null ? eventUpdDto.getParticipantLimit() : event.getParticipantLimit());
         event.setRequestModeration(eventUpdDto.getRequestModeration() != null ? eventUpdDto.getRequestModeration() : event.getRequestModeration());

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitInDto;
@@ -22,7 +21,6 @@ import java.util.List;
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class PubController {
     @Autowired
     private PubService pubService;

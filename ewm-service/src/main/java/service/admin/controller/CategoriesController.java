@@ -29,7 +29,7 @@ public class CategoriesController {
 
     @PatchMapping("/{catId}")
     public ResponseEntity<CategoriesOutDto> patchCategories(@PathVariable Long catId,
-                                                            @RequestBody CategoriesInDto categories) {
+                                                            @Valid @RequestBody CategoriesInDto categories) {
 
         return ResponseEntity.ok().body(categoriesService.updateCat(catId, categories));
     }
