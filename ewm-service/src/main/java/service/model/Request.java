@@ -19,10 +19,10 @@ public class Request {
     private Long id;
     @Column(nullable = false)
     private LocalDateTime created;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
     @Column(nullable = false)

@@ -14,7 +14,7 @@ public class Compilations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE})
     private List<Event> events;
     @Column
     private Boolean pinned;

@@ -17,7 +17,7 @@ public class Event {
     private Long id;
     @Column(nullable = false)
     private String annotation;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "category_id", nullable = false)
     private Categories categories;
     @Column
@@ -28,10 +28,10 @@ public class Event {
     private String description;
     @Column(nullable = false)
     private LocalDateTime eventDate;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
     @Column(nullable = false)
@@ -49,14 +49,15 @@ public class Event {
     private String title;
     @Column
     private Integer views;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "compilations_id")
     private Compilations compilations;
 
     @PrePersist
     public void prePersist() {
         if (this.participantLimit == null) this.participantLimit = 0;
-        if (this.requestModeration == null) this.requestModeration = true;
+        if (this.requestModeration == null) this.requestModeration = false;
+        if (this.paid == null) this.paid = false;
         if (this.views == null) this.views = 0;
     }
 
