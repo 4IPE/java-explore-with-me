@@ -18,7 +18,7 @@ public class Event {
     @Column(nullable = false)
     private String annotation;
     @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Categories categories;
     @Column
     private Integer confirmedRequests;
@@ -29,7 +29,7 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "initiator_id", nullable = false)
+    @JoinColumn(name = "initiator_id")
     private User initiator;
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "location_id", nullable = false)
