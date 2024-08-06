@@ -19,7 +19,6 @@ import service.mapper.EventMapper;
 import service.mapper.LocationMapper;
 import service.mapper.RequestMapper;
 import service.model.Event;
-import service.model.Location;
 import service.model.Request;
 import service.model.User;
 import service.repository.*;
