@@ -41,8 +41,6 @@ public class PubServiceImpl implements PubService {
     private CategoriesMapper categoriesMapper;
     @Autowired
     private CompilationsRepository compilationsRepository;
-    @Autowired
-    private StatClient statClient;
 
 
     @Override

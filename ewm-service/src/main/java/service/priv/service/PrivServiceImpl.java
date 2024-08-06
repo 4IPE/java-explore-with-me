@@ -78,7 +78,7 @@ public class PrivServiceImpl implements PrivService {
         return eventMapper.toOut(event);
     }
 
-    //TODO private StateAction stateAction; куда то это надо
+
     @Override
     public EventOutDto pathEvent(Long userId, Long eventId, EventUpdDto eventUpd) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));

@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @DeleteMapping("{userId}")
-    public ResponseEntity<String> addUser(@PathVariable Long userId) {
+    public ResponseEntity<String> delUser(@PathVariable Long userId) {
         userService.delUser(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Пользователь удален");
     }

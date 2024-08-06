@@ -79,7 +79,6 @@ public class PrivController {
     @PostMapping("/requests")
     public ResponseEntity<RequestOutDto> addRequest(@PathVariable Long userId,
                                                     @RequestParam(name = "eventId") Long eventId) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(privService.addRequest(userId, eventId));
     }
 

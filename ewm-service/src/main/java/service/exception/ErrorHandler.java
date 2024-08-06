@@ -5,11 +5,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import service.exception.model.ErrorModel;
 import service.exception.model.ImpossibilityOfAction;
 import service.exception.model.NotFound;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler(ImpossibilityOfAction.class)
