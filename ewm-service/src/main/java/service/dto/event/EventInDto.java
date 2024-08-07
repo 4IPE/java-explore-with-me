@@ -18,7 +18,7 @@ public class EventInDto {
     @NotBlank
     @Size(min = 20, max = 2000)
     private String annotation;
-    private Long categories;
+    private Long category;
     @NotNull
     @NotEmpty
     @NotBlank

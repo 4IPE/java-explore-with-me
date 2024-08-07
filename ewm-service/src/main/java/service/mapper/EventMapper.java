@@ -13,11 +13,11 @@ import service.model.Event;
 public interface EventMapper {
     EventShortDto toEventShort(Event event);
 
-    @Mapping(target = "categories", source = "categories", qualifiedByName = "toEntity")
+    @Mapping(target = "category", source = "category", qualifiedByName = "toEntity")
     Event toEvent(EventInDto event);
 
     @Mapping(target = "state", ignore = true)
-    @Mapping(target = "categories", source = "category")
+    @Mapping(target = "category", source = "category")
     @Mapping(target = "eventDate", source = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EventOutDto toOut(Event event);
 }

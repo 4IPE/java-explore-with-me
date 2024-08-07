@@ -20,7 +20,7 @@ public class Event {
     private String annotation;
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "category_id")
-    private Categories categories;
+    private Categories category;
     @Column
     private Integer confirmedRequests;
     @Column

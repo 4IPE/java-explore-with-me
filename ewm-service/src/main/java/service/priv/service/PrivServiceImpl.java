@@ -91,7 +91,7 @@ public class PrivServiceImpl implements PrivService {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
         event.setAnnotation(eventUpd.getAnnotation() != null ? eventUpd.getAnnotation() : event.getAnnotation());
-        event.setCategories(eventUpd.getCategories() != null ? categoriesRepository.findById(eventUpd.getCategories()).orElse(event.getCategories()) : event.getCategories());
+        event.setCategory(eventUpd.getCategories() != null ? categoriesRepository.findById(eventUpd.getCategories()).orElse(event.getCategory()) : event.getCategory());
         event.setDescription(eventUpd.getDescription() != null && !eventUpd.getDescription().isEmpty() ? eventUpd.getDescription() : event.getDescription());
         event.setEventDate(eventUpd.getEventDate() != null ? eventUpd.getEventDate() : event.getEventDate());
         event.setPaid(eventUpd.getPaid() != null ? eventUpd.getPaid() : event.getPaid());

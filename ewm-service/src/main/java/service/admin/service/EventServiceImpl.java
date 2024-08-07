@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
             throw new ImpossibilityOfAction("событие можно отклонить, только если оно еще не опубликовано ");
         }
         event.setAnnotation(eventUpdDto.getAnnotation() != null ? eventUpdDto.getAnnotation() : event.getAnnotation());
-        event.setCategories(eventUpdDto.getCategories() != null ? categoriesRepository.findById(eventUpdDto.getCategories()).orElse(event.getCategories()) : event.getCategories());
+        event.setCategory(eventUpdDto.getCategories() != null ? categoriesRepository.findById(eventUpdDto.getCategories()).orElse(event.getCategory()) : event.getCategory());
         event.setDescription(eventUpdDto.getDescription() != null ? eventUpdDto.getDescription() : event.getDescription());
         event.setEventDate(eventUpdDto.getEventDate() != null ? eventUpdDto.getEventDate() : event.getEventDate());
         event.setLocation(eventUpdDto.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpdDto.getLocation())) : event.getLocation());
