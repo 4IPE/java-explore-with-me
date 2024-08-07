@@ -21,7 +21,6 @@ public class EventInDto {
     @NotBlank
     @Size(min = 20, max = 2000)
     private String annotation;
-    @NotNull
     private Long categories;
     @NotNull
     @NotEmpty
@@ -31,7 +30,6 @@ public class EventInDto {
     @ValidEventDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @NotNull
     private Location location;
     private Boolean paid;
     private Integer participantLimit;
