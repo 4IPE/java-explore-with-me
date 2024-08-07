@@ -5,7 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.clients.StatClient;
+import ru.practicum.dto.EndpointHitOutDto;
 import service.dto.categories.CategoriesOutDto;
 import service.dto.event.EventOutDto;
 import service.enumarated.State;
@@ -21,6 +23,7 @@ import service.repository.EventRepository;
 import service.repository.RequestRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,6 +73,7 @@ public class PubServiceImpl implements PubService {
     }
 
     @Override
+    @Transactional
     public List<EventOutDto> getEvent(String text,
                                       List<Long> categories,
                                       Boolean paid,
@@ -80,29 +84,46 @@ public class PubServiceImpl implements PubService {
                                       Integer from,
                                       Integer size,
                                       StatClient statClient) {
+
         Pageable pageable = PageRequest.of(from / size, size);
-        rangeStart = rangeStart != null ? rangeStart : LocalDateTime.now();
-        rangeEnd = rangeEnd != null ? rangeEnd : LocalDateTime.MAX;
-        eventRepository.findAllEventWithStateForPub(rangeStart, rangeEnd, text, paid, categories != null ? categories : new ArrayList<>(),
-                onlyAvailable, State.PUBLISHED, pageable).forEach(event -> {
+
+        LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now();
+        LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
+
+        List<Event> events = eventRepository.findAllEventWithStateForPub(
+                rangeStartVal, rangeEndVal, text, paid, categories != null ? categories : new ArrayList<>(),
+                onlyAvailable, State.PUBLISHED, pageable).stream().collect(Collectors.toList());
+
+        for (Event event : events) {
             String uri = "/events/" + event.getId();
-            event.setViews(Math.toIntExact(statClient.getStats(null, null, List.of(uri), false).getBody().get(0).getHits()));
+
+            List<EndpointHitOutDto> stats = statClient.getStats(
+                    LocalDateTime.now().minusYears(10).format(DateTimeFormatter.BASIC_ISO_DATE),
+                    LocalDateTime.now().plusYears(10).format(DateTimeFormatter.BASIC_ISO_DATE),
+                    List.of(uri), false).getBody();
+
+            if (stats == null || stats.isEmpty()) {
+                throw new RuntimeException("No stats returned for URI: " + uri);
+            }
+
+            event.setViews(Math.toIntExact(stats.get(0).getHits()));
             eventRepository.save(event);
-        });
-        if (sort.equalsIgnoreCase("event_date")) {
-            pageable = PageRequest.of(from / size, size, Sort.by(Sort.Order.desc("eventDate")));
         }
-        if (sort.equalsIgnoreCase("views")) {
+
+        if ("event_date".equalsIgnoreCase(sort)) {
+            pageable = PageRequest.of(from / size, size, Sort.by(Sort.Order.desc("eventDate")));
+        } else if ("views".equalsIgnoreCase(sort)) {
             pageable = PageRequest.of(from / size, size, Sort.by(Sort.Order.desc("views")));
         }
 
-
-        return eventRepository.findAllEventWithStateForPub(rangeStart, rangeEnd, text, paid, categories != null ? categories : new ArrayList<>(),
-                        onlyAvailable, State.PUBLISHED, pageable)
-                .stream()
+        return eventRepository.findAllEventWithStateForPub(
+                        rangeStartVal, rangeEndVal, text, paid, categories != null ? categories : new ArrayList<>(),
+                        onlyAvailable, State.PUBLISHED, pageable
+                ).stream()
                 .map(eventMapper::toOut)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<Compilations> getCompilations(Boolean pinned, Integer from, Integer size) {
