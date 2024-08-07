@@ -20,7 +20,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "FROM Event ev " +
             "WHERE ev.eventDate BETWEEN :rangeStart AND :rangeEnd " +
             "AND (ev.initiator.id IN :users) " +
-            "AND (ev.categories.id IN :categories) " +
+            "AND (ev.category.id IN :categories) " +
             "AND (ev.state IN :state) ")
     Page<Event> findAllEventWithState(@Param("rangeStart") LocalDateTime rangeStart,
                                       @Param("rangeEnd") LocalDateTime rangeEnd,
@@ -34,7 +34,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "WHERE ev.eventDate BETWEEN :rangeStart AND :rangeEnd " +
             "AND (ev.state = :state)" +
             "AND (:paid=null OR ev.paid = :paid) " +
-            "AND (ev.categories.id IN :categories) " +
+            "AND (ev.category.id IN :categories) " +
             "AND (:text = null OR LOWER(ev.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(ev.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
             "AND (:onlyAvailable = FALSE OR (ev.participantLimit = 0 OR ev.participantLimit > ev.confirmedRequests))")
