@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -14,8 +14,9 @@ public class Compilations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE})
-    private List<Event> events;
+    @ManyToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private Set<Event> events;
+    ;
     @Column
     private Boolean pinned;
     @Column

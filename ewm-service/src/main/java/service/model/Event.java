@@ -6,6 +6,7 @@ import service.enumarated.State;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -49,9 +50,13 @@ public class Event {
     private String title;
     @Column
     private Integer views;
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "compilations_id")
-    private Compilations compilations;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "event_compilation",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "compilation_id")
+    )
+    private Set<Compilations> compilations;
 
     @PrePersist
     public void prePersist() {

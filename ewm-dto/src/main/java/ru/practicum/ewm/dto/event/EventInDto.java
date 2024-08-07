@@ -25,7 +25,7 @@ public class EventInDto {
     @NotNull
     @NotEmpty
     @NotBlank
-    @Size(min = 20, max = 254)
+    @Size(min = 20, max = 7000)
     private String description;
     @ValidEventDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

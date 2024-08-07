@@ -9,7 +9,7 @@ import ru.practicum.ewm.dto.event.EventShortDto;
 import service.model.Event;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring", uses = {CategoriesMapper.class, UserMapper.class, CategoriesMapperAbs.class})
+        componentModel = "spring", uses = {CategoriesMapper.class, UserMapper.class})
 public interface EventMapper {
     EventShortDto toEventShort(Event event);
 

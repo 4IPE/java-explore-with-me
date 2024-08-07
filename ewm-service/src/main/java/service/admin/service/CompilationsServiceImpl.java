@@ -2,6 +2,7 @@ package service.admin.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.compilations.CompilationsInDto;
 import service.exception.model.NotFound;
 import service.mapper.CompilationsMapper;
@@ -16,6 +17,7 @@ public class CompilationsServiceImpl implements CompilationsService {
     private CompilationsMapper compilationsMapper;
 
     @Override
+    @Transactional
     public Compilations addCompilations(CompilationsInDto compilationsInDto) {
         Compilations compilations = compilationsMapper.toCompilations(compilationsInDto);
         return compilationsRepository.save(compilations);
