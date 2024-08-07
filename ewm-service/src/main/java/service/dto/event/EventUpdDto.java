@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 import service.dto.event.enumerated.StateAction;
 
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class EventUpdDto {
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
+    @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
     private StateAction stateAction;

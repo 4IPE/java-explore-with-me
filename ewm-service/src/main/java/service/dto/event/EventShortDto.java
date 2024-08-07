@@ -9,7 +9,7 @@ import service.dto.user.UserShortDto;
 @Setter
 public class EventShortDto {
     private String annotation;
-    private CategoriesOutDto categories;
+    private CategoriesOutDto category;
     private Integer confirmedRequests;
     private String eventDate;
     private Long id;
