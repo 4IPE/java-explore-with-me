@@ -2,7 +2,6 @@ package service.admin.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.exception.model.NotFound;
