@@ -37,7 +37,7 @@ public class PrivController {
     }
 
     @PostMapping("/events")
-    public ResponseEntity<EventOutDto> addEvents(@RequestBody EventInDto event,
+    public ResponseEntity<EventOutDto> addEvents(@Valid @RequestBody EventInDto event,
                                                  @PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(privService.addEvent(event, userId));
     }

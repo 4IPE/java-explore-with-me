@@ -20,10 +20,10 @@ public class Request {
     @Column(nullable = false)
     private LocalDateTime created;
     @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "event_id", nullable = false)
+    @JoinColumn(name = "event_id")
     private Event event;
     @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "requester_id", nullable = false)
+    @JoinColumn(name = "requester_id")
     private User requester;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
