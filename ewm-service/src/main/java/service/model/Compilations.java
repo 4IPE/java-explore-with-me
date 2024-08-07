@@ -16,7 +16,6 @@ public class Compilations {
     private Long id;
     @ManyToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Event> events;
-    ;
     @Column
     private Boolean pinned;
     @Column
