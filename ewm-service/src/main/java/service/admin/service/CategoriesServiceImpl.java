@@ -2,8 +2,8 @@ package service.admin.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.categories.CategoriesInDto;
-import ru.practicum.ewm.dto.categories.CategoriesOutDto;
+import service.dto.categories.CategoriesInDto;
+import service.dto.categories.CategoriesOutDto;
 import service.exception.model.NotFound;
 import service.mapper.CategoriesMapper;
 import service.model.Categories;

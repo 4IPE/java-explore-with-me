@@ -1,12 +1,11 @@
-package ru.practicum.ewm.dto.user;
+package service.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserOutDto {
-    private String email;
+public class UserShortDto {
     private Long id;
     private String name;
 }

@@ -1,7 +1,7 @@
 package service.admin.service;
 
-import ru.practicum.ewm.dto.user.UserInDto;
-import ru.practicum.ewm.dto.user.UserOutDto;
+import service.dto.user.UserInDto;
+import service.dto.user.UserOutDto;
 
 import java.util.List;
 

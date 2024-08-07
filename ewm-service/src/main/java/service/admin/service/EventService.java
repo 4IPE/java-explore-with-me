@@ -1,7 +1,7 @@
 package service.admin.service;
 
-import ru.practicum.ewm.dto.event.EventOutDto;
-import ru.practicum.ewm.dto.event.EventUpdDto;
+import service.dto.event.EventOutDto;
+import service.dto.event.EventUpdDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

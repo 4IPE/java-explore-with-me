@@ -7,9 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.event.EventOutDto;
-import ru.practicum.ewm.dto.event.EventUpdDto;
 import service.admin.service.EventService;
+import service.dto.event.EventOutDto;
+import service.dto.event.EventUpdDto;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;

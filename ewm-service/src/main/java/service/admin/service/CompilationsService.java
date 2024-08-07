@@ -1,12 +1,12 @@
 package service.admin.service;
 
-import ru.practicum.ewm.dto.compilations.CompilationsInDto;
-import service.model.Compilations;
+import service.dto.compilations.CompilationsInDto;
+import service.dto.compilations.CompilationsOutDto;
 
 public interface CompilationsService {
-    Compilations addCompilations(CompilationsInDto compilationsInDto);
+    CompilationsOutDto addCompilations(CompilationsInDto compilationsInDto);
 
     void delCompilations(Long compId);
 
-    Compilations pathCompilations(CompilationsInDto compilationsInDto, Long compId);
+    CompilationsOutDto pathCompilations(CompilationsInDto compilationsInDto, Long compId);
 }

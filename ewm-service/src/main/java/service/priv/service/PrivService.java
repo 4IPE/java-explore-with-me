@@ -1,12 +1,12 @@
 package service.priv.service;
 
-import ru.practicum.ewm.dto.event.EventInDto;
-import ru.practicum.ewm.dto.event.EventOutDto;
-import ru.practicum.ewm.dto.event.EventShortDto;
-import ru.practicum.ewm.dto.event.EventUpdDto;
-import ru.practicum.ewm.dto.request.RequestOutDto;
-import ru.practicum.ewm.dto.request.RequestUpdStatusDto;
-import ru.practicum.ewm.dto.request.RequestUpdStatusResultDto;
+import service.dto.event.EventInDto;
+import service.dto.event.EventOutDto;
+import service.dto.event.EventShortDto;
+import service.dto.event.EventUpdDto;
+import service.dto.request.RequestOutDto;
+import service.dto.request.RequestUpdStatusDto;
+import service.dto.request.RequestUpdStatusResultDto;
 
 import java.util.List;
 

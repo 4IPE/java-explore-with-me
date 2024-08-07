@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.event.enumerated;
+package service.dto.event.enumerated;
 
 public enum StateAction {
     SEND_TO_REVIEW,

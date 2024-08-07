@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.request.enumerated;
+package service.dto.request.enumerated;
 
 public enum StatusUpd {
     CONFIRMED,

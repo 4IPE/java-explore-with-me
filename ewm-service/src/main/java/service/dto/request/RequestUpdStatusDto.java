@@ -1,8 +1,8 @@
-package ru.practicum.ewm.dto.request;
+package service.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.ewm.dto.request.enumerated.StatusUpd;
+import service.dto.request.enumerated.StatusUpd;
 
 import java.util.List;
 

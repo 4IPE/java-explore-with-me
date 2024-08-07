@@ -3,7 +3,8 @@ package service.admin.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.dto.compilations.CompilationsInDto;
+import service.dto.compilations.CompilationsInDto;
+import service.dto.compilations.CompilationsOutDto;
 import service.exception.model.NotFound;
 import service.mapper.CompilationsMapper;
 import service.model.Compilations;
@@ -18,9 +19,9 @@ public class CompilationsServiceImpl implements CompilationsService {
 
     @Override
     @Transactional
-    public Compilations addCompilations(CompilationsInDto compilationsInDto) {
+    public CompilationsOutDto addCompilations(CompilationsInDto compilationsInDto) {
         Compilations compilations = compilationsMapper.toCompilations(compilationsInDto);
-        return compilationsRepository.save(compilations);
+        return compilationsMapper.toCompilationsOutDto(compilationsRepository.save(compilations));
     }
 
     @Override
@@ -30,13 +31,13 @@ public class CompilationsServiceImpl implements CompilationsService {
     }
 
     @Override
-    public Compilations pathCompilations(CompilationsInDto compilationsInDto, Long compId) {
+    public CompilationsOutDto pathCompilations(CompilationsInDto compilationsInDto, Long compId) {
         Compilations compilationsFind = compilationsRepository.findById(compId).orElseThrow(() -> new NotFound("Compilation with " + compId + " was not found"));
         Compilations compilationsCreate = compilationsMapper.toCompilations(compilationsInDto);
         compilationsFind.setTitle(compilationsCreate.getTitle() != null && !compilationsCreate.getTitle().isEmpty() ? compilationsCreate.getTitle() : compilationsFind.getTitle());
         compilationsFind.setEvents(compilationsCreate.getEvents() != null ? compilationsCreate.getEvents() : compilationsFind.getEvents());
         compilationsFind.setPinned(compilationsCreate.getPinned() != null ? compilationsCreate.getPinned() : compilationsFind.getPinned());
-        return compilationsRepository.save(compilationsFind);
+        return compilationsMapper.toCompilationsOutDto(compilationsRepository.save(compilationsFind));
     }
 
 

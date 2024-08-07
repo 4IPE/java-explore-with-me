@@ -1,8 +1,8 @@
 package service.pub.service;
 
 import ru.practicum.clients.StatClient;
-import ru.practicum.ewm.dto.categories.CategoriesOutDto;
-import ru.practicum.ewm.dto.event.EventOutDto;
+import service.dto.categories.CategoriesOutDto;
+import service.dto.event.EventOutDto;
 import service.model.Compilations;
 
 import java.time.LocalDateTime;

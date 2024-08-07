@@ -3,7 +3,7 @@ package service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import ru.practicum.ewm.dto.request.RequestOutDto;
+import service.dto.request.RequestOutDto;
 import service.model.Request;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

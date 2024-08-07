@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.user.UserInDto;
-import ru.practicum.ewm.dto.user.UserOutDto;
 import service.admin.service.UserService;
+import service.dto.user.UserInDto;
+import service.dto.user.UserOutDto;
 
 import javax.validation.Valid;
 import java.util.List;

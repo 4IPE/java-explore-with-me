@@ -3,9 +3,9 @@ package service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import ru.practicum.ewm.dto.event.EventInDto;
-import ru.practicum.ewm.dto.event.EventOutDto;
-import ru.practicum.ewm.dto.event.EventShortDto;
+import service.dto.event.EventInDto;
+import service.dto.event.EventOutDto;
+import service.dto.event.EventShortDto;
 import service.model.Event;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.categories.CategoriesInDto;
-import ru.practicum.ewm.dto.categories.CategoriesOutDto;
 import service.admin.service.CategoriesService;
+import service.dto.categories.CategoriesInDto;
+import service.dto.categories.CategoriesOutDto;
 
 import javax.validation.Valid;
 

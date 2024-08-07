@@ -3,7 +3,7 @@ package service.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.dto.request.enumerated.StatusUpd;
+import service.dto.request.enumerated.StatusUpd;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

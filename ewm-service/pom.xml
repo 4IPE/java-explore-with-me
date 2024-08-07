@@ -68,13 +68,6 @@
 
         <dependency>
             <groupId>ru.practicum</groupId>
-            <artifactId>ewm-dto</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.practicum</groupId>
             <artifactId>stats-client</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

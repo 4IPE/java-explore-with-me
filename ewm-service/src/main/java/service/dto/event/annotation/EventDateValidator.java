@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.event.annotation;
+package service.dto.event.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

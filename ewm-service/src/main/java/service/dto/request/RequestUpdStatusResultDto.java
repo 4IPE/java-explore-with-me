@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.request;
+package service.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,9 +2,9 @@ package service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import ru.practicum.ewm.dto.user.UserInDto;
-import ru.practicum.ewm.dto.user.UserOutDto;
-import ru.practicum.ewm.dto.user.UserShortDto;
+import service.dto.user.UserInDto;
+import service.dto.user.UserOutDto;
+import service.dto.user.UserShortDto;
 import service.model.User;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

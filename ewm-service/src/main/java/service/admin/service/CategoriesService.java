@@ -1,7 +1,7 @@
 package service.admin.service;
 
-import ru.practicum.ewm.dto.categories.CategoriesInDto;
-import ru.practicum.ewm.dto.categories.CategoriesOutDto;
+import service.dto.categories.CategoriesInDto;
+import service.dto.categories.CategoriesOutDto;
 
 public interface CategoriesService {
     CategoriesOutDto addCategories(CategoriesInDto categoriesIn);

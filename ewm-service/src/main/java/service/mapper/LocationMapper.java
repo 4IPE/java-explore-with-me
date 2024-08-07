@@ -7,5 +7,5 @@ import service.model.Location;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = "spring")
 public interface LocationMapper {
-    Location toEntity(ru.practicum.ewm.dto.event.Location location);
+    Location toEntity(service.dto.event.Location location);
 }
