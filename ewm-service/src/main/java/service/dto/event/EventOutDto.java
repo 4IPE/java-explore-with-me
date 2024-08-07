@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Setter
 public class EventOutDto {
     private String annotation;
-    private CategoriesOutDto categories;
+    private CategoriesOutDto category;
     private Integer confirmedRequests;
     private LocalDateTime createdOn;
     private String description;
-    private LocalDateTime eventDate;
+    private String eventDate;
     private Long id;
     private UserShortDto initiator;
     private Location location;

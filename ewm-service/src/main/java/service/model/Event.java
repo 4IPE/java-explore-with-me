@@ -61,7 +61,7 @@ public class Event {
     @PrePersist
     public void prePersist() {
         if (this.participantLimit == null) this.participantLimit = 0;
-        if (this.requestModeration == null) this.requestModeration = false;
+        if (this.requestModeration == null) this.requestModeration = true;
         if (this.paid == null) this.paid = false;
         if (this.views == null) this.views = 0;
     }

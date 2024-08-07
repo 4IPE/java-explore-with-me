@@ -25,12 +25,14 @@ public class CompilationsServiceImpl implements CompilationsService {
     }
 
     @Override
+    @Transactional
     public void delCompilations(Long compId) {
         Compilations compilations = compilationsRepository.findById(compId).orElseThrow(() -> new NotFound("Compilation with " + compId + " was not found"));
         compilationsRepository.deleteById(compId);
     }
 
     @Override
+    @Transactional
     public CompilationsOutDto pathCompilations(CompilationsInDto compilationsInDto, Long compId) {
         Compilations compilationsFind = compilationsRepository.findById(compId).orElseThrow(() -> new NotFound("Compilation with " + compId + " was not found"));
         Compilations compilationsCreate = compilationsMapper.toCompilations(compilationsInDto);
