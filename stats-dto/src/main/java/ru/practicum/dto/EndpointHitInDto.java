@@ -3,13 +3,11 @@ package ru.practicum.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Validated
 public class EndpointHitInDto {
     private String app;
     private String uri;
