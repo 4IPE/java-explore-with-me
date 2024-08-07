@@ -6,10 +6,7 @@ import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 import service.dto.event.annotation.ValidEventDate;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -32,6 +29,7 @@ public class EventInDto {
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
+    @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
     @NotNull

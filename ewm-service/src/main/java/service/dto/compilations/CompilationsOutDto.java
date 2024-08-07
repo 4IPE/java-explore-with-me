@@ -9,7 +9,8 @@ import java.util.Set;
 @Getter
 @Setter
 public class CompilationsOutDto {
-    private Set<Event> events;
-    private Boolean pinned;
+    private Long id;
     private String title;
+    private Boolean pinned;
+    private Set<Event> events;
 }
