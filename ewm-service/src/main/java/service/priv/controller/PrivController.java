@@ -67,7 +67,7 @@ public class PrivController {
     @PatchMapping("/events/{eventId}/requests")
     public ResponseEntity<RequestUpdStatusResultDto> pathRequest(@PathVariable Long userId,
                                                                  @PathVariable Long eventId,
-                                                                 @Valid @RequestBody RequestUpdStatusDto requestUpdStatusDto) {
+                                                                 @RequestBody RequestUpdStatusDto requestUpdStatusDto) {
 
         return ResponseEntity.ok().body(privService.pathRequest(userId, eventId, requestUpdStatusDto));
     }

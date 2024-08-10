@@ -29,23 +29,22 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                       @Param("categories") List<Long> categories,
                                       Pageable pageable);
 
-    @Query("SELECT ev " +
-            "FROM Event ev " +
+    @Query("SELECT ev FROM Event ev " +
             "WHERE ev.eventDate BETWEEN :rangeStart AND :rangeEnd " +
-            "AND ev.state = :state " +
+            "AND (ev.state = :state) " +
             "AND (:paid IS NULL OR ev.paid = :paid) " +
             "AND (:categories IS NULL OR ev.category.id IN :categories) " +
-            "AND (:text IS NULL OR (LOWER(ev.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
-            "OR LOWER(ev.description) LIKE LOWER(CONCAT('%', :text, '%')))) " +
-            "AND (:onlyAvailable IS NULL OR :onlyAvailable = FALSE OR (ev.participantLimit = 0 OR ev.participantLimit > ev.confirmedRequests))")
-    Page<Event> findAllEventWithStateForPub(
-            @Param("rangeStart") LocalDateTime rangeStart,
-            @Param("rangeEnd") LocalDateTime rangeEnd,
-            @Param("text") String text,
-            @Param("paid") Boolean paid,
-            @Param("categories") List<Long> categories,
-            @Param("onlyAvailable") Boolean onlyAvailable,
-            @Param("state") State state,
-            Pageable pageable);
+            "AND (:text IS NULL OR LOWER(ev.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(ev.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
+            "AND (:onlyAvailable IS NULL OR :onlyAvailable = FALSE " +
+            "OR (ev.participantLimit = 0 OR ev.participantLimit > ev.confirmedRequests))")
+    Page<Event> findAllEventWithStateForPub(@Param("rangeStart") LocalDateTime rangeStart,
+                                            @Param("rangeEnd") LocalDateTime rangeEnd,
+                                            @Param("text") String text,
+                                            @Param("paid") Boolean paid,
+                                            @Param("categories") List<Long> categories,
+                                            @Param("onlyAvailable") Boolean onlyAvailable,
+                                            @Param("state") State state,
+                                            Pageable pageable);
 
 }

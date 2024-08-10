@@ -105,6 +105,9 @@ public class PrivServiceImpl implements PrivService {
         if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             event.setState(State.PENDING);
         }
+        if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+            event.setState(State.CANCELED);
+        }
         return eventMapper.toOut(eventRepository.save(event));
     }
 
