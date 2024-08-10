@@ -7,6 +7,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
+import service.dto.compilations.CompilationsUpdDto;
 import service.exception.model.NotFound;
 import service.model.Compilations;
 import service.model.Event;
@@ -24,7 +25,10 @@ public abstract class CompilationsMapper {
     private EventRepository eventRepository;
 
     @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
-    public abstract Compilations toCompilations(CompilationsInDto compilationsInDto);
+    public abstract Compilations toCompilationsForIn(CompilationsInDto compilationsInDto);
+
+    @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
+    public abstract Compilations toCompilationsForUpd(CompilationsUpdDto compilationsDto);
 
 
     public abstract CompilationsOutDto toCompilationsOutDto(Compilations compilations);

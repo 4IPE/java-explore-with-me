@@ -93,7 +93,7 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
-        if (eventUpd.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+        if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
             event.setState(State.CANCELED);
         }
         event.setState(State.PUBLISHED);
@@ -194,14 +194,14 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new ImpossibilityOfAction("Нельзя участвовать в неопубликованном событии ");
         }
-        if (event.getParticipantLimit().equals(requestRepository.countRequest(eventId))) {
+        if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new ImpossibilityOfAction("у события достигнут лимит запросов на участие");
         }
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);
         requestCreate.setCreated(LocalDateTime.now());
-        if (!event.getRequestModeration()) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             requestCreate.setStatus(StatusUpd.CONFIRMED);
         }
         requestCreate.setStatus(StatusUpd.PENDING);

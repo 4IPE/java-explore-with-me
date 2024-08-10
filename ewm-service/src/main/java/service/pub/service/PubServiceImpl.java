@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitOutDto;
 import service.dto.categories.CategoriesOutDto;
@@ -73,7 +72,6 @@ public class PubServiceImpl implements PubService {
     }
 
     @Override
-    @Transactional
     public List<EventOutDto> getEvent(String text,
                                       List<Long> categories,
                                       Boolean paid,
@@ -87,7 +85,7 @@ public class PubServiceImpl implements PubService {
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now();
+        LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now().minusYears(10);
         LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
 
         List<Event> events = eventRepository.findAllEventWithStateForPub(
@@ -98,8 +96,8 @@ public class PubServiceImpl implements PubService {
             String uri = "/events/" + event.getId();
 
             List<EndpointHitOutDto> stats = statClient.getStats(
-                    LocalDateTime.now().minusYears(10).format(DateTimeFormatter.BASIC_ISO_DATE),
-                    LocalDateTime.now().plusYears(10).format(DateTimeFormatter.BASIC_ISO_DATE),
+                    LocalDateTime.now().minusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    LocalDateTime.now().plusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     List.of(uri), false).getBody();
 
             if (stats == null || stats.isEmpty()) {

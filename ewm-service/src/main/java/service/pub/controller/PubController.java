@@ -1,6 +1,8 @@
 package service.pub.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +59,10 @@ public class PubController {
                                                        @RequestParam(name = "categories", required = false) List<Long> categories,
                                                        @RequestParam(name = "paid", required = false) Boolean paid,
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                       @PastOrPresent
                                                        @RequestParam(name = "rangeStart", required = false) LocalDateTime rangeStart,
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                       @FutureOrPresent
                                                        @RequestParam(name = "rangeEnd", required = false) LocalDateTime rangeEnd,
                                                        @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                                        @RequestParam(name = "sort", required = false) String sort,

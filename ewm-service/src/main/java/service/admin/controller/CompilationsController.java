@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import service.admin.service.CompilationsService;
 import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
+import service.dto.compilations.CompilationsUpdDto;
 
 @RestController
 @RequestMapping(path = "/admin/compilations")
@@ -28,7 +29,7 @@ public class CompilationsController {
 
     @PatchMapping("/{compId}")
     public ResponseEntity<CompilationsOutDto> patchCompilations(@PathVariable Long compId,
-                                                                @Valid @RequestBody CompilationsInDto compilations) {
+                                                                @Valid @RequestBody CompilationsUpdDto compilations) {
 
         return ResponseEntity.ok().body(compilationsService.pathCompilations(compilations, compId));
     }
