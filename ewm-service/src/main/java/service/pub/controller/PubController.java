@@ -43,7 +43,6 @@ public class PubController {
     public ResponseEntity<EventOutDto> getEventWithId(@PathVariable Long id, HttpServletRequest request) {
 
 
-
         EndpointHitInDto endpointHitInDto = new EndpointHitInDto();
         endpointHitInDto.setApp("ewm-service");
         endpointHitInDto.setIp(request.getRemoteAddr());
