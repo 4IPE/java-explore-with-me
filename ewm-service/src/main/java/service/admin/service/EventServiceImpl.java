@@ -76,7 +76,7 @@ public class EventServiceImpl implements EventService {
         event.setAnnotation(eventUpdDto.getAnnotation() != null ? eventUpdDto.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpdDto.getCategories() != null ? categoriesRepository.findById(eventUpdDto.getCategories()).orElse(event.getCategory()) : event.getCategory());
         event.setDescription(eventUpdDto.getDescription() != null ? eventUpdDto.getDescription() : event.getDescription());
-        event.setEventDate(eventUpdDto.getEventDate() != null ? eventUpdDto.getEventDate() : event.getEventDate());
+        event.setEventDate(eventUpdDto.getEventDate() != null && eventUpdDto.getEventDate().isBefore(event.getEventDate()) ? eventUpdDto.getEventDate() : event.getEventDate());
         event.setLocation(eventUpdDto.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpdDto.getLocation())) : event.getLocation());
 
         event.setPaid(eventUpdDto.getPaid() != null ? eventUpdDto.getPaid() : event.getPaid());

@@ -87,7 +87,7 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getState().equals(State.CANCELED)) {
+        if (!event.getState().equals(State.PENDING)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
@@ -118,6 +118,7 @@ public class PrivServiceImpl implements PrivService {
     }
 
     @Override
+    @Transactional
     public RequestUpdStatusResultDto pathRequest(Long userId, Long eventId, RequestUpdStatusDto requestUpdStatusDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with id " + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with id " + eventId + " was not found"));
@@ -179,6 +180,7 @@ public class PrivServiceImpl implements PrivService {
     }
 
     @Override
+    @Transactional
     public RequestOutDto addRequest(Long userId, Long eventId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
