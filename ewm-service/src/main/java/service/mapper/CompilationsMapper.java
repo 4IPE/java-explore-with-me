@@ -12,6 +12,7 @@ import service.model.Compilations;
 import service.model.Event;
 import service.repository.EventRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +31,9 @@ public abstract class CompilationsMapper {
 
     @Named("toEvent")
     public Set<Event> toEntity(List<Long> eventsId) {
+        if (eventsId == null || eventsId.isEmpty()) {
+            return new HashSet<>();
+        }
         return eventsId.stream()
                 .map(id -> eventRepository.findById(id)
                         .orElseThrow(() -> new NotFound("Event with " + id + " was not found")))
