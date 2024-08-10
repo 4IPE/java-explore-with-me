@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventUpdDto;
 import service.dto.event.enumerated.StateAction;
@@ -61,6 +62,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventOutDto pathEvent(EventUpdDto eventUpdDto,
                                  Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));

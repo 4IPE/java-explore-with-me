@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventShortDto;
@@ -80,12 +81,13 @@ public class PrivServiceImpl implements PrivService {
 
 
     @Override
+    @Transactional
     public EventOutDto pathEvent(Long userId, Long eventId, EventUpdDto eventUpd) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getState().equals(State.PUBLISHED)) {
-            throw new ImpossibilityOfAction("You cannot perform this action since this event is published");
+        if (!event.getState().equals(State.PENDING)) {
+            throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
