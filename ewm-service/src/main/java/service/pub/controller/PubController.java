@@ -42,8 +42,7 @@ public class PubController {
     @GetMapping("/events/{id}")
     public ResponseEntity<EventOutDto> getEventWithId(@PathVariable Long id, HttpServletRequest request) {
 
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
+
 
         EndpointHitInDto endpointHitInDto = new EndpointHitInDto();
         endpointHitInDto.setApp("ewm-service");
@@ -67,8 +66,7 @@ public class PubController {
                                                        @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                        @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                        HttpServletRequest request) {
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
+
         EndpointHitInDto endpointHitInDto = new EndpointHitInDto();
         endpointHitInDto.setApp("ewm-service");
         endpointHitInDto.setIp(request.getRemoteAddr());
@@ -86,7 +84,7 @@ public class PubController {
     }
 
     @GetMapping("/compilations/{compId}")
-    public ResponseEntity<Compilations> getCompilations(Long compId) {
+    public ResponseEntity<Compilations> getCompilations(@PathVariable Long compId) {
         return ResponseEntity.ok().body(pubService.getCompilationsWithId(compId));
     }
 }
