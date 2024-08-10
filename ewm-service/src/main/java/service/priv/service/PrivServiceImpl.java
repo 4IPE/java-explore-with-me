@@ -12,8 +12,9 @@ import service.dto.event.EventUpdDto;
 import service.dto.request.RequestOutDto;
 import service.dto.request.RequestUpdStatusDto;
 import service.dto.request.RequestUpdStatusResultDto;
-import service.dto.request.enumerated.StatusUpd;
 import service.enumarated.State;
+import service.enumarated.StateAction;
+import service.enumarated.StatusUpd;
 import service.exception.model.ImpossibilityOfAction;
 import service.exception.model.NotFound;
 import service.mapper.EventMapper;
@@ -92,6 +93,10 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
+        if (eventUpd.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+            event.setState(State.CANCELED);
+        }
+        event.setState(State.PUBLISHED);
         event.setAnnotation(eventUpd.getAnnotation() != null ? eventUpd.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpd.getCategories() != null ? categoriesRepository.findById(eventUpd.getCategories()).orElse(event.getCategory()) : event.getCategory());
         event.setDescription(eventUpd.getDescription() != null && !eventUpd.getDescription().isEmpty() ? eventUpd.getDescription() : event.getDescription());
@@ -207,7 +212,7 @@ public class PrivServiceImpl implements PrivService {
     public RequestOutDto cancelRequest(Long userId, Long requestId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFound("Request with" + requestId + " was not found"));
-        requestRepository.deleteById(requestId);
+        request.setStatus(StatusUpd.CANCELED);
         return requestMapper.toRequestOut(request);
     }
 }

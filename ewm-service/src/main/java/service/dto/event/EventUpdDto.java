@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
-import service.dto.event.enumerated.StateAction;
+import service.enumarated.StateAction;
 
 import java.time.LocalDateTime;
 

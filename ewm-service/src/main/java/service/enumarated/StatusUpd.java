@@ -1,7 +1,8 @@
-package service.dto.request.enumerated;
+package service.enumarated;
 
 public enum StatusUpd {
     CONFIRMED,
     REJECTED,
-    PENDING
+    PENDING,
+    CANCELED
 }

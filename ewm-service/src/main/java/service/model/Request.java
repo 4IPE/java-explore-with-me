@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import service.dto.request.enumerated.StatusUpd;
+import service.enumarated.StatusUpd;
 
 import java.time.LocalDateTime;
 

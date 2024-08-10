@@ -20,4 +20,9 @@ public class Compilations {
     private Boolean pinned;
     @Column
     private String title;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.pinned == null) this.pinned = false;
+    }
 }

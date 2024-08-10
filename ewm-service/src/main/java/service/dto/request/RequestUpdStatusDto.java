@@ -2,7 +2,7 @@ package service.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import service.dto.request.enumerated.StatusUpd;
+import service.enumarated.StatusUpd;
 
 import java.util.List;
 

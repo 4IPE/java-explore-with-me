@@ -1,4 +1,4 @@
-package service.dto.event.enumerated;
+package service.enumarated;
 
 public enum StateAction {
     SEND_TO_REVIEW,
