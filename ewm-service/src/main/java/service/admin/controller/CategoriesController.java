@@ -1,5 +1,6 @@
 package service.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import service.admin.service.CategoriesService;
 import service.dto.categories.CategoriesInDto;
 import service.dto.categories.CategoriesOutDto;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/admin/categories")

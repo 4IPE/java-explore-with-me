@@ -1,11 +1,11 @@
 package service.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import service.dto.request.enumerated.StatusUpd;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

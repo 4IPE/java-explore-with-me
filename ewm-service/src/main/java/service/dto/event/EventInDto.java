@@ -1,12 +1,12 @@
 package service.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 import service.dto.event.annotation.ValidEventDate;
 
-import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Getter

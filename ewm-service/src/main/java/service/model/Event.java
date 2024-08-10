@@ -1,10 +1,10 @@
 package service.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import service.enumarated.State;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 

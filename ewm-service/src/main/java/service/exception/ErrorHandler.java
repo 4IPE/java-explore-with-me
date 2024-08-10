@@ -33,7 +33,7 @@ public class ErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorModel exception(Exception ex) {
-        return new ErrorModel("500", ex.getCause().toString(), ex.getMessage());
+        return new ErrorModel("500", ex.getClass().toString(), ex.getMessage());
     }
 
 }

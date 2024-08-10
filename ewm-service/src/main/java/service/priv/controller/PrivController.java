@@ -1,5 +1,6 @@
 package service.priv.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import service.dto.request.RequestUpdStatusDto;
 import service.dto.request.RequestUpdStatusResultDto;
 import service.priv.service.PrivService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

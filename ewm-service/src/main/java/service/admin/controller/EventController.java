@@ -1,5 +1,6 @@
 package service.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import service.admin.service.EventService;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventUpdDto;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
