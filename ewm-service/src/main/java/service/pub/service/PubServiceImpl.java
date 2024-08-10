@@ -89,7 +89,7 @@ public class PubServiceImpl implements PubService {
         LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
 
         List<Event> events = eventRepository.findAllEventWithStateForPub(
-                rangeStartVal, rangeEndVal, text, paid, categories != null ? categories : new ArrayList<>(),
+                rangeStartVal, rangeEndVal, text, paid, categories,
                 onlyAvailable, State.PUBLISHED, pageable).stream().collect(Collectors.toList());
 
         for (Event event : events) {
@@ -101,7 +101,7 @@ public class PubServiceImpl implements PubService {
                     List.of(uri), false).getBody();
 
             if (stats == null || stats.isEmpty()) {
-                throw new RuntimeException("No stats returned for URI: " + uri);
+                return new ArrayList<>();
             }
 
             event.setViews(Math.toIntExact(stats.get(0).getHits()));
@@ -115,7 +115,7 @@ public class PubServiceImpl implements PubService {
         }
 
         return eventRepository.findAllEventWithStateForPub(
-                        rangeStartVal, rangeEndVal, text, paid, categories != null ? categories : new ArrayList<>(),
+                        rangeStartVal, rangeEndVal, text, paid, categories,
                         onlyAvailable, State.PUBLISHED, pageable
                 ).stream()
                 .map(eventMapper::toOut)

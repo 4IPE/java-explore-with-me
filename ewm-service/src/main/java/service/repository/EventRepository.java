@@ -19,9 +19,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT ev " +
             "FROM Event ev " +
             "WHERE ev.eventDate BETWEEN :rangeStart AND :rangeEnd " +
-            "AND (ev.initiator.id IN :users) " +
-            "AND (ev.category.id IN :categories) " +
-            "AND (ev.state IN :state) ")
+            "AND (:users IS NULL OR ev.initiator.id IN :users) " +
+            "AND (:categories IS NULL OR ev.category.id IN :categories) " +
+            "AND (:states IS NULL OR ev.state IN :state) ")
     Page<Event> findAllEventWithState(@Param("rangeStart") LocalDateTime rangeStart,
                                       @Param("rangeEnd") LocalDateTime rangeEnd,
                                       @Param("users") List<Long> users,

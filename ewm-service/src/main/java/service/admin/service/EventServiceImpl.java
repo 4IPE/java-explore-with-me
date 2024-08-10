@@ -45,18 +45,16 @@ public class EventServiceImpl implements EventService {
                                       LocalDateTime rangeEnd,
                                       Integer from,
                                       Integer size) {
-        List<Long> userId = users != null ? users : new ArrayList<>();
         List<String> statesString = states != null ? states : new ArrayList<>();
-        List<Long> catId = categories != null ? categories : new ArrayList<>();
+        LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now().minusYears(10);
+        LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
         Pageable pageable = PageRequest.of(from / size, size);
-        List<State> stateEnum = new ArrayList<>();
         if (statesString.isEmpty()) {
-            return eventRepository.findAllEventWithState(rangeStart, rangeEnd, userId, stateEnum, catId, pageable)
+            return eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, null, categories, pageable)
                     .stream()
                     .map(eventMapper::toOut).collect(Collectors.toList());
         }
-        stateEnum = statesString.stream().map(State::valueOf).collect(Collectors.toList());
-        return eventRepository.findAllEventWithState(rangeStart, rangeEnd, userId, stateEnum, catId, pageable)
+        return eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, statesString.stream().map(State::valueOf).collect(Collectors.toList()), categories, pageable)
                 .stream()
                 .map(eventMapper::toOut).collect(Collectors.toList());
     }

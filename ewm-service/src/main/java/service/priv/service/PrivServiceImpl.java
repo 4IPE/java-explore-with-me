@@ -123,8 +123,7 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with id " + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with id " + eventId + " was not found"));
 
-        if (event.getParticipantLimit() > 0 && event.getRequestModeration() &&
-                event.getConfirmedRequests() >= event.getParticipantLimit()) {
+        if (event.getParticipantLimit() == 0 || event.getRequestModeration()) {
             throw new ImpossibilityOfAction("Для данного ивента не требуется подтверждения завяок ");
         }
 
@@ -203,6 +202,8 @@ public class PrivServiceImpl implements PrivService {
         requestCreate.setCreated(LocalDateTime.now());
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             requestCreate.setStatus(StatusUpd.CONFIRMED);
+            event.setConfirmedRequests(requestRepository.countRequest(event.getId()));
+            eventRepository.save(event);
         }
         requestCreate.setStatus(StatusUpd.PENDING);
         return requestMapper.toRequestOut(requestRepository.save(requestCreate));

@@ -15,6 +15,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static java.lang.System.*;
+
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
@@ -33,13 +35,13 @@ public class StatServerController {
     }
 
     @GetMapping("/stats")
-    public List<EndpointHitOutDto> getStats(@RequestParam(name = "start") String start,
+    public ResponseEntity<List<EndpointHitOutDto>> getStats(@RequestParam(name = "start") String start,
                                             @RequestParam(name = "end") String end,
                                             @RequestParam(name = "uris", required = false) List<String> uris,
                                             @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
         String decodeStart = URLDecoder.decode(start, StandardCharsets.UTF_8);
         String decodeEnd = URLDecoder.decode(end, StandardCharsets.UTF_8);
         log.info("Обработка запроса на стороне сервера для получения статистики с параметрами");
-        return service.getStat(decodeStart, decodeEnd, uris, unique);
+        return ResponseEntity.ok().body(service.getStat(decodeStart, decodeEnd, uris, unique));
     }
 }
