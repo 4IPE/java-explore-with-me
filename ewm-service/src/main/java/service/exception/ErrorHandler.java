@@ -7,6 +7,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import service.exception.model.ErrorModel;
 import service.exception.model.ImpossibilityOfAction;
 import service.exception.model.NotFound;
@@ -30,6 +31,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorModel notFound(NotFound ex) {
         return new ErrorModel("404", "NotFound", ex.getMessage());
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorModel badRequest(HandlerMethodValidationException ex) {
+        return new ErrorModel("400", "Incorrectly made request.", ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

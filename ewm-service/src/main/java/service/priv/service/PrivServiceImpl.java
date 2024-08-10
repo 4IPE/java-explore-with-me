@@ -87,16 +87,12 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getState().equals(State.PENDING)) {
+        if (!event.getState().equals(State.CANCELED)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
-        if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
-            event.setState(State.CANCELED);
-        }
-        event.setState(State.PUBLISHED);
         event.setAnnotation(eventUpd.getAnnotation() != null ? eventUpd.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpd.getCategories() != null ? categoriesRepository.findById(eventUpd.getCategories()).orElse(event.getCategory()) : event.getCategory());
         event.setDescription(eventUpd.getDescription() != null && !eventUpd.getDescription().isEmpty() ? eventUpd.getDescription() : event.getDescription());
@@ -106,6 +102,9 @@ public class PrivServiceImpl implements PrivService {
         event.setRequestModeration(eventUpd.getRequestModeration() != null ? eventUpd.getRequestModeration() : event.getRequestModeration());
         event.setTitle(eventUpd.getTitle() != null ? eventUpd.getTitle() : event.getTitle());
         event.setLocation(eventUpd.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpd.getLocation())) : event.getLocation());
+        if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
+            event.setState(State.PENDING);
+        }
         return eventMapper.toOut(eventRepository.save(event));
     }
 
@@ -200,12 +199,12 @@ public class PrivServiceImpl implements PrivService {
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);
         requestCreate.setCreated(LocalDateTime.now());
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+        requestCreate.setStatus(StatusUpd.PENDING);
+        if (!event.getRequestModeration() || event.getParticipantLimit().equals(0)) {
             requestCreate.setStatus(StatusUpd.CONFIRMED);
             event.setConfirmedRequests(requestRepository.countRequest(event.getId()));
             eventRepository.save(event);
         }
-        requestCreate.setStatus(StatusUpd.PENDING);
         return requestMapper.toRequestOut(requestRepository.save(requestCreate));
     }
 
