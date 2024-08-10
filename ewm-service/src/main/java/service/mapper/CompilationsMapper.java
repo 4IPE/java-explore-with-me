@@ -25,7 +25,7 @@ public abstract class CompilationsMapper {
     @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
     public abstract Compilations toCompilations(CompilationsInDto compilationsInDto);
 
-    @Mapping(source = "pinned", target = "pinned", qualifiedByName = "toString")
+
     public abstract CompilationsOutDto toCompilationsOutDto(Compilations compilations);
 
     @Named("toEvent")
@@ -34,10 +34,5 @@ public abstract class CompilationsMapper {
                 .map(id -> eventRepository.findById(id)
                         .orElseThrow(() -> new NotFound("Event with " + id + " was not found")))
                 .collect(Collectors.toSet());
-    }
-
-    @Named("toString")
-    public String toString(Boolean pinned) {
-        return String.valueOf(pinned);
     }
 }
