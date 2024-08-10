@@ -11,6 +11,6 @@ import java.util.Set;
 public class CompilationsOutDto {
     private Long id;
     private String title;
-    private Boolean pinned;
+    private String pinned;
     private Set<EventOutDto> events;
 }

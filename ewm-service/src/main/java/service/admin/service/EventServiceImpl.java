@@ -66,14 +66,16 @@ public class EventServiceImpl implements EventService {
     public EventOutDto pathEvent(EventUpdDto eventUpdDto,
                                  Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getPublishedOn().plusHours(1).isAfter(eventUpdDto.getEventDate())) {
-            throw new ImpossibilityOfAction("дата начала изменяемого события должна быть не ранее чем за час от даты публикации");
-        }
-        if (!event.getState().equals(State.PENDING) && eventUpdDto.getStateAction().equals(StateAction.PUBLISH_EVENT)) {
-            throw new ImpossibilityOfAction("событие можно публиковать, только если оно в состоянии ожидания публикации");
-        }
-        if (!event.getState().equals(State.PENDING) && eventUpdDto.getStateAction().equals(StateAction.REJECT_EVENT)) {
-            throw new ImpossibilityOfAction("событие можно отклонить, только если оно еще не опубликовано ");
+        if (event.getPublishedOn() != null && eventUpdDto.getEventDate() != null) {
+            if (!event.getPublishedOn().plusHours(1).isAfter(eventUpdDto.getEventDate())) {
+                throw new ImpossibilityOfAction("дата начала изменяемого события должна быть не ранее чем за час от даты публикации");
+            }
+            if (!event.getState().equals(State.PENDING) && eventUpdDto.getStateAction().equals(StateAction.PUBLISH_EVENT)) {
+                throw new ImpossibilityOfAction("событие можно публиковать, только если оно в состоянии ожидания публикации");
+            }
+            if (!event.getState().equals(State.PENDING) && eventUpdDto.getStateAction().equals(StateAction.REJECT_EVENT)) {
+                throw new ImpossibilityOfAction("событие можно отклонить, только если оно еще не опубликовано ");
+            }
         }
         event.setAnnotation(eventUpdDto.getAnnotation() != null ? eventUpdDto.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpdDto.getCategories() != null ? categoriesRepository.findById(eventUpdDto.getCategories()).orElse(event.getCategory()) : event.getCategory());
