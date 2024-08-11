@@ -34,13 +34,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (ev.state = :state) " +
             "AND (:paid IS NULL OR ev.paid = :paid) " +
             "AND (:categories IS NULL OR ev.category.id IN :categories) " +
-            "AND (:text IS NULL OR ev.annotation LIKE CONCAT('%', :text, '%')" +
-            "OR ev.description LIKE CONCAT('%', :text, '%'))" +
             "AND (:onlyAvailable IS NULL OR :onlyAvailable = FALSE " +
             "OR (ev.participantLimit = 0 OR ev.participantLimit > ev.confirmedRequests))")
     Page<Event> findAllEventWithStateForPub(@Param("rangeStart") LocalDateTime rangeStart,
                                             @Param("rangeEnd") LocalDateTime rangeEnd,
-                                            @Param("text") String text,
                                             @Param("paid") Boolean paid,
                                             @Param("categories") List<Long> categories,
                                             @Param("onlyAvailable") Boolean onlyAvailable,

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import service.dto.categories.CategoriesOutDto;
 import service.dto.user.UserShortDto;
+import service.enumarated.State;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class EventOutDto {
     private Integer participantLimit;
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
-    private String state;
+    private State state;
     private String title;
     private Integer views;
 }

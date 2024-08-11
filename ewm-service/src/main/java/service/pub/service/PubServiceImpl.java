@@ -89,8 +89,13 @@ public class PubServiceImpl implements PubService {
         LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
 
         List<Event> events = eventRepository.findAllEventWithStateForPub(
-                rangeStartVal, rangeEndVal, text, paid, categories,
-                onlyAvailable, State.PUBLISHED, pageable).stream().collect(Collectors.toList());
+                        rangeStartVal, rangeEndVal, paid, categories,
+                        onlyAvailable, State.PUBLISHED, pageable).stream()
+                .filter(event -> (text == null || text.isEmpty()) ||
+                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
+                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(text.toLowerCase())) ||
+                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(text.toLowerCase())))
+                .collect(Collectors.toList());
 
         for (Event event : events) {
             String uri = "/events/" + event.getId();
@@ -115,9 +120,13 @@ public class PubServiceImpl implements PubService {
         }
 
         return eventRepository.findAllEventWithStateForPub(
-                        rangeStartVal, rangeEndVal, text, paid, categories,
+                        rangeStartVal, rangeEndVal, paid, categories,
                         onlyAvailable, State.PUBLISHED, pageable
                 ).stream()
+                .filter(event -> (text == null || text.isEmpty()) ||
+                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
+                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(text.toLowerCase())) ||
+                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(text.toLowerCase())))
                 .map(eventMapper::toOut)
                 .collect(Collectors.toList());
     }

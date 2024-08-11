@@ -1,5 +1,7 @@
 package service.priv.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PrivServiceImpl implements PrivService {
+    private static final Logger log = LoggerFactory.getLogger(PrivServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -68,7 +71,7 @@ public class PrivServiceImpl implements PrivService {
         event.setInitiator(user);
         event.setState(State.PENDING);
         EventOutDto eventOutDto = eventMapper.toOut(eventRepository.save(event));
-        eventOutDto.setState(event.getState().name());
+        eventOutDto.setState(event.getState());
         return eventOutDto;
     }
 
@@ -87,7 +90,7 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getState().equals(State.CANCELED) && !eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
+        if (eventUpd.getStateAction() != null && !event.getState().equals(State.CANCELED) && !eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
 //        if (!event.getState().equals(State.PENDING)) {

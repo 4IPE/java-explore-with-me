@@ -6,6 +6,7 @@ import org.mapstruct.ReportingPolicy;
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventShortDto;
+import service.enumarated.State;
 import service.model.Event;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -16,8 +17,8 @@ public interface EventMapper {
     @Mapping(target = "category", source = "category", qualifiedByName = "toEntity")
     Event toEvent(EventInDto event);
 
-    @Mapping(target = "state", ignore = true)
     @Mapping(target = "category", source = "category")
     @Mapping(target = "eventDate", source = "eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "state", source = "state", resultType = State.class)
     EventOutDto toOut(Event event);
 }
