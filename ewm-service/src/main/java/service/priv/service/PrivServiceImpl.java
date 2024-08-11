@@ -198,7 +198,7 @@ public class PrivServiceImpl implements PrivService {
         if (requestFind != null) {
             throw new ImpossibilityOfAction("Нельзя добавлять потворный запрос");
         }
-        if (user.getId().equals(event.getInitiator().getId())) {
+        if (userId.equals(event.getInitiator().getId())) {
             throw new ImpossibilityOfAction("Инициатор события не может добавить запрос на участие в своём событии");
         }
         if (!event.getState().equals(State.PUBLISHED)) {
@@ -207,7 +207,6 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(event.getConfirmedRequests()) || event.getParticipantLimit() == 1) {
             throw new ImpossibilityOfAction("у события достигнут лимит запросов на участие");
         }
-        log.info("event.getParticipantLimit() " + event.getParticipantLimit() + "event.getConfirmedRequests() " + event.getConfirmedRequests());
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);

@@ -23,7 +23,6 @@ import service.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +62,10 @@ public class PubServiceImpl implements PubService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new NotFound("Event with" + id + " was not found");
         }
-        event.setViews(Math.toIntExact(statClient.getStats(null, null, List.of(uri), false).getBody().get(0).getHits()));
+
+        List<EndpointHitOutDto> views = statClient.getStats(LocalDateTime.now().minusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.now().plusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), List.of(uri), false).getBody();
+        event.setViews(Math.toIntExact(views != null && !views.isEmpty() ? views.getFirst().getHits() : 0));
         Integer count = requestRepository.countRequest(id);
         if (event.getConfirmedRequests().equals(count)) {
             event.setConfirmedRequests(count);
@@ -83,18 +85,21 @@ public class PubServiceImpl implements PubService {
                                       Integer size,
                                       StatClient statClient) {
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        int page = from / size;
+        Pageable pageable = PageRequest.of(page, size);
 
         LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now().minusYears(10);
         LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
 
+        String searchText = text != null ? text.toLowerCase() : "";
+
         List<Event> events = eventRepository.findAllEventWithStateForPub(
                         rangeStartVal, rangeEndVal, paid, categories,
                         onlyAvailable, State.PUBLISHED, pageable).stream()
-                .filter(event -> (text == null || text.isEmpty()) ||
-                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
-                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(text.toLowerCase())) ||
-                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(text.toLowerCase())))
+                .filter(event -> searchText.isEmpty() ||
+                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(searchText)) ||
+                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(searchText)) ||
+                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(searchText)))
                 .collect(Collectors.toList());
 
         for (Event event : events) {
@@ -105,28 +110,28 @@ public class PubServiceImpl implements PubService {
                     LocalDateTime.now().plusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     List.of(uri), false).getBody();
 
-            if (stats == null || stats.isEmpty()) {
-                return new ArrayList<>();
+            if (stats != null && !stats.isEmpty()) {
+                event.setViews(Math.toIntExact(stats.get(0).getHits()));
+                eventRepository.save(event);
+            } else {
+                event.setViews(0);
             }
-
-            event.setViews(Math.toIntExact(stats.get(0).getHits()));
-            eventRepository.save(event);
         }
 
         if ("event_date".equalsIgnoreCase(sort)) {
-            pageable = PageRequest.of(from / size, size, Sort.by(Sort.Order.desc("eventDate")));
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("eventDate")));
         } else if ("views".equalsIgnoreCase(sort)) {
-            pageable = PageRequest.of(from / size, size, Sort.by(Sort.Order.desc("views")));
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("views")));
         }
 
         return eventRepository.findAllEventWithStateForPub(
                         rangeStartVal, rangeEndVal, paid, categories,
                         onlyAvailable, State.PUBLISHED, pageable
                 ).stream()
-                .filter(event -> (text == null || text.isEmpty()) ||
-                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
-                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(text.toLowerCase())) ||
-                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(text.toLowerCase())))
+                .filter(event -> searchText.isEmpty() ||
+                        (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(searchText)) ||
+                        (event.getDescription() != null && event.getDescription().toLowerCase().contains(searchText)) ||
+                        (event.getTitle() != null && event.getTitle().toLowerCase().contains(searchText)))
                 .map(eventMapper::toOut)
                 .collect(Collectors.toList());
     }

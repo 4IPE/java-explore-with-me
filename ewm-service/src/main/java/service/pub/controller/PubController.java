@@ -66,8 +66,8 @@ public class PubController {
                                                        @RequestParam(name = "rangeEnd", required = false) LocalDateTime rangeEnd,
                                                        @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                                        @RequestParam(name = "sort", required = false) String sort,
-                                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                       @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                       @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                                       @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
                                                        HttpServletRequest request) {
 
         EndpointHitInDto endpointHitInDto = new EndpointHitInDto();

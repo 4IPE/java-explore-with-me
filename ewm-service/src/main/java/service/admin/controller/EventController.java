@@ -32,8 +32,8 @@ public class EventController {
                                                       @RequestParam(name = "rangeStart", required = false) LocalDateTime rangeStart,
                                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                                       @RequestParam(name = "rangeEnd", required = false) LocalDateTime rangeEnd,
-                                                      @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                      @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                      @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                                      @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
         return ResponseEntity.ok().body(eventService.getEvent(users, states, categories, rangeStart, rangeEnd, from, size));
     }
