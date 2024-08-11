@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitOutDto;
 import service.dto.categories.CategoriesOutDto;
+import service.dto.compilations.CompilationsOutDto;
 import service.dto.event.EventOutDto;
 import service.enumarated.State;
 import service.exception.model.NotFound;
 import service.mapper.CategoriesMapper;
+import service.mapper.CompilationsMapper;
 import service.mapper.EventMapper;
 import service.mapper.RequestMapper;
-import service.model.Compilations;
 import service.model.Event;
 import service.repository.CategoriesRepository;
 import service.repository.CompilationsRepository;
@@ -42,6 +43,8 @@ public class PubServiceImpl implements PubService {
     private CategoriesMapper categoriesMapper;
     @Autowired
     private CompilationsRepository compilationsRepository;
+    @Autowired
+    private CompilationsMapper compilationsMapper;
 
 
     @Override
@@ -64,7 +67,7 @@ public class PubServiceImpl implements PubService {
         }
 
         List<EndpointHitOutDto> views = statClient.getStats(LocalDateTime.now().minusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().plusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), List.of(uri), false).getBody();
+                LocalDateTime.now().plusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), List.of(uri), true).getBody();
         event.setViews(Math.toIntExact(views != null && !views.isEmpty() ? views.getFirst().getHits() : 0));
         Integer count = requestRepository.countRequest(id);
         if (event.getConfirmedRequests().equals(count)) {
@@ -138,18 +141,21 @@ public class PubServiceImpl implements PubService {
 
 
     @Override
-    public List<Compilations> getCompilations(Boolean pinned, Integer from, Integer size) {
+    public List<CompilationsOutDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (pinned == null) {
-            return compilationsRepository.findAll(pageable).stream().collect(Collectors.toList());
+            return compilationsRepository.findAll(pageable).stream()
+                    .map(compilationsMapper::toCompilationsOutDto).collect(Collectors.toList());
 
         }
-        return compilationsRepository.findByPinned(pinned, pageable);
+        return compilationsRepository.findByPinned(pinned, pageable).stream()
+                .map(compilationsMapper::toCompilationsOutDto).toList();
     }
 
     @Override
-    public Compilations getCompilationsWithId(Long compId) {
-        return compilationsRepository.findById(compId).orElseThrow(() -> new NotFound("Compilations with " + compId + "was not found"));
+    public CompilationsOutDto getCompilationsWithId(Long compId) {
+        return compilationsMapper.toCompilationsOutDto(compilationsRepository.findById(compId)
+                .orElseThrow(() -> new NotFound("Compilations with " + compId + "was not found")));
     }
 
 

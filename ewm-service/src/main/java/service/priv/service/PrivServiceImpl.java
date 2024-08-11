@@ -90,10 +90,8 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+
         if (event.getState().equals(State.PUBLISHED)) {
-            throw new ImpossibilityOfAction("нельзя изменять опубликованное событие");
-        }
-        if (eventUpd.getStateAction() != null && !event.getState().equals(State.CANCELED) && !eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
 
@@ -133,7 +131,7 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with id " + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with id " + eventId + " was not found"));
 
-        if (event.getParticipantLimit() == 0 || event.getRequestModeration()) {
+        if (event.getParticipantLimit() == 0 && !event.getRequestModeration()) {
             throw new ImpossibilityOfAction("Для данного ивента не требуется подтверждения завяок ");
         }
 

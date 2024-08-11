@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitInDto;
 import service.dto.categories.CategoriesOutDto;
+import service.dto.compilations.CompilationsOutDto;
 import service.dto.event.EventOutDto;
-import service.model.Compilations;
 import service.pub.service.PubService;
 
 import java.time.LocalDateTime;
@@ -80,14 +80,14 @@ public class PubController {
     }
 
     @GetMapping("/compilations")
-    public ResponseEntity<List<Compilations>> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
-                                                              @RequestParam(defaultValue = "0") Integer from,
-                                                              @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<List<CompilationsOutDto>> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
+                                                                    @RequestParam(defaultValue = "0") Integer from,
+                                                                    @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok().body(pubService.getCompilations(pinned, from, size));
     }
 
     @GetMapping("/compilations/{compId}")
-    public ResponseEntity<Compilations> getCompilations(@PathVariable Long compId) {
+    public ResponseEntity<CompilationsOutDto> getCompilations(@PathVariable Long compId) {
         return ResponseEntity.ok().body(pubService.getCompilationsWithId(compId));
     }
 }
