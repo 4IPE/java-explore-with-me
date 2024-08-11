@@ -87,9 +87,13 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
-        if (!event.getState().equals(State.PENDING)) {
+        if (!event.getState().equals(State.CANCELED) && !eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
+//        if (!event.getState().equals(State.PENDING)) {
+//            throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
+//        }
+
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
@@ -185,6 +189,7 @@ public class PrivServiceImpl implements PrivService {
     @Override
     @Transactional
     public RequestOutDto addRequest(Long userId, Long eventId) {
+        LocalDateTime dateCreate = LocalDateTime.now();
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
         Request requestFind = requestRepository.findByRequesterIdAndEventId(userId, eventId);
@@ -203,7 +208,7 @@ public class PrivServiceImpl implements PrivService {
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);
-        requestCreate.setCreated(LocalDateTime.now());
+        requestCreate.setCreated(dateCreate);
         requestCreate.setStatus(StatusUpd.PENDING);
         if (!event.getRequestModeration() || event.getParticipantLimit().equals(0)) {
             requestCreate.setStatus(StatusUpd.CONFIRMED);
