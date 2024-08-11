@@ -8,6 +8,7 @@ import service.dto.request.RequestOutDto;
 import service.dto.request.RequestUpdStatusDto;
 import service.dto.request.RequestUpdStatusResultDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PrivService {
@@ -25,7 +26,7 @@ public interface PrivService {
 
     List<RequestOutDto> getRequestWithOurEvent(Long userId);
 
-    RequestOutDto addRequest(Long userId, Long eventId);
+    RequestOutDto addRequest(Long userId, Long eventId, LocalDateTime createDate);
 
     RequestOutDto cancelRequest(Long userId, Long requestId);
 }

@@ -1,5 +1,6 @@
 package service.priv.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,10 @@ import service.dto.request.RequestUpdStatusDto;
 import service.dto.request.RequestUpdStatusResultDto;
 import service.priv.service.PrivService;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -68,7 +73,6 @@ public class PrivController {
     public ResponseEntity<RequestUpdStatusResultDto> pathRequest(@PathVariable Long userId,
                                                                  @PathVariable Long eventId,
                                                                  @RequestBody RequestUpdStatusDto requestUpdStatusDto) {
-
         return ResponseEntity.ok().body(privService.pathRequest(userId, eventId, requestUpdStatusDto));
     }
 
@@ -79,8 +83,14 @@ public class PrivController {
 
     @PostMapping("/requests")
     public ResponseEntity<RequestOutDto> addRequest(@PathVariable Long userId,
-                                                    @RequestParam(name = "eventId") Long eventId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(privService.addRequest(userId, eventId));
+                                                    @RequestParam(name = "eventId") Long eventId,
+                                                    HttpServletResponse response) {
+        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = now.atZone(ZoneId.of("GMT"));
+        String formattedDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(zonedDateTime);
+        response.setHeader("Date", formattedDate);
+        RequestOutDto result = privService.addRequest(userId, eventId, now);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PatchMapping("/requests/{requestId}/cancel")

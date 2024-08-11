@@ -188,8 +188,7 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     @Transactional
-    public RequestOutDto addRequest(Long userId, Long eventId) {
-        LocalDateTime dateCreate = LocalDateTime.now();
+    public RequestOutDto addRequest(Long userId, Long eventId, LocalDateTime createDate) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
         Request requestFind = requestRepository.findByRequesterIdAndEventId(userId, eventId);
@@ -208,7 +207,7 @@ public class PrivServiceImpl implements PrivService {
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);
-        requestCreate.setCreated(dateCreate);
+        requestCreate.setCreated(createDate);
         requestCreate.setStatus(StatusUpd.PENDING);
         if (!event.getRequestModeration() || event.getParticipantLimit().equals(0)) {
             requestCreate.setStatus(StatusUpd.CONFIRMED);
