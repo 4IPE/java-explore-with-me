@@ -190,8 +190,8 @@ public class PrivServiceImpl implements PrivService {
     @Override
     @Transactional
     public RequestOutDto addRequest(Long userId, Long eventId, LocalDateTime createDate) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with " + userId + " was not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ImpossibilityOfAction("Event with " + eventId + " was not found"));
         Request requestFind = requestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (requestFind != null) {
             throw new ImpossibilityOfAction("Нельзя добавлять потворный запрос");

@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -85,7 +86,7 @@ public class PrivController {
     public ResponseEntity<RequestOutDto> addRequest(@PathVariable Long userId,
                                                     @RequestParam(name = "eventId") Long eventId,
                                                     HttpServletResponse response) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         ZonedDateTime zonedDateTime = now.atZone(ZoneId.of("GMT"));
         String formattedDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(zonedDateTime);
         response.setHeader("Date", formattedDate);
