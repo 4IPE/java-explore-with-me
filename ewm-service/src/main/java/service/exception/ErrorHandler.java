@@ -2,6 +2,7 @@ package service.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorModel uniqueFail(DataIntegrityViolationException ex) {
         return new ErrorModel("409", "Unique Fail", ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorModel uniqueFail(HttpMessageNotReadableException ex) {
+        return new ErrorModel("409", "Message error", ex.getMessage());
     }
 
     @ExceptionHandler(NotFound.class)

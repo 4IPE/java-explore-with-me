@@ -90,12 +90,12 @@ public class PrivServiceImpl implements PrivService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
         Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
                 .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+        if (event.getState().equals(State.PUBLISHED)) {
+            throw new ImpossibilityOfAction("нельзя изменять опубликованное событие");
+        }
         if (eventUpd.getStateAction() != null && !event.getState().equals(State.CANCELED) && !eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
         }
-//        if (!event.getState().equals(State.PENDING)) {
-//            throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
-//        }
 
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
@@ -204,9 +204,10 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new ImpossibilityOfAction("Нельзя участвовать в неопубликованном событии ");
         }
-        if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(event.getConfirmedRequests()) || event.getParticipantLimit() == 1) {
             throw new ImpossibilityOfAction("у события достигнут лимит запросов на участие");
         }
+        log.info("event.getParticipantLimit() " + event.getParticipantLimit() + "event.getConfirmedRequests() " + event.getConfirmedRequests());
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
         requestCreate.setEvent(event);
