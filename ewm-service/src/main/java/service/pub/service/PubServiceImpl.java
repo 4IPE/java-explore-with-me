@@ -1,10 +1,13 @@
 package service.pub.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitOutDto;
 import service.dto.categories.CategoriesOutDto;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PubServiceImpl implements PubService {
+    private static final Logger log = LoggerFactory.getLogger(PubServiceImpl.class);
     @Autowired
     private EventRepository eventRepository;
     @Autowired
@@ -141,20 +145,22 @@ public class PubServiceImpl implements PubService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<CompilationsOutDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (pinned == null) {
-            return compilationsRepository.findAll(pageable).stream()
+            return compilationsRepository.findAllWithEvents(pageable).stream()
                     .map(compilationsMapper::toCompilationsOutDto).collect(Collectors.toList());
 
         }
-        return compilationsRepository.findByPinned(pinned, pageable).stream()
+        return compilationsRepository.findByPinnedWithEvents(pinned, pageable).stream()
                 .map(compilationsMapper::toCompilationsOutDto).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CompilationsOutDto getCompilationsWithId(Long compId) {
-        return compilationsMapper.toCompilationsOutDto(compilationsRepository.findById(compId)
+        return compilationsMapper.toCompilationsOutDto(compilationsRepository.findByIdWithEvents(compId)
                 .orElseThrow(() -> new NotFound("Compilations with " + compId + "was not found")));
     }
 

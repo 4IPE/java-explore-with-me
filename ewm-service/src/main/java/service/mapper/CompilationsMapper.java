@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.dto.compilations.CompilationsUpdDto;
+import service.dto.event.EventOutDto;
 import service.exception.model.NotFound;
 import service.model.Compilations;
 import service.model.Event;
@@ -23,6 +24,8 @@ public abstract class CompilationsMapper {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private EventMapper eventMapper;
 
     @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
     public abstract Compilations toCompilationsForIn(CompilationsInDto compilationsInDto);
@@ -30,7 +33,7 @@ public abstract class CompilationsMapper {
     @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
     public abstract Compilations toCompilationsForUpd(CompilationsUpdDto compilationsDto);
 
-
+    @Mapping(source = "events", target = "events", qualifiedByName = "toEventOutDto")
     public abstract CompilationsOutDto toCompilationsOutDto(Compilations compilations);
 
     @Named("toEvent")
@@ -41,6 +44,16 @@ public abstract class CompilationsMapper {
         return eventsId.stream()
                 .map(id -> eventRepository.findById(id)
                         .orElseThrow(() -> new NotFound("Event with " + id + " was not found")))
+                .collect(Collectors.toSet());
+    }
+
+    @Named("toEventOutDto")
+    public Set<EventOutDto> toEventOutDto(Set<Event> events) {
+        if (events == null || events.isEmpty()) {
+            return new HashSet<>();
+        }
+        return events.stream()
+                .map(eventMapper::toOut)
                 .collect(Collectors.toSet());
     }
 }
