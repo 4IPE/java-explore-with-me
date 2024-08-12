@@ -202,7 +202,7 @@ public class PrivServiceImpl implements PrivService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new ImpossibilityOfAction("Нельзя участвовать в неопубликованном событии ");
         }
-        if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(event.getConfirmedRequests()) || event.getParticipantLimit() == 1) {
+        if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(requestRepository.countRequest(event.getId()))) {
             throw new ImpossibilityOfAction("у события достигнут лимит запросов на участие");
         }
         Request requestCreate = new Request();
