@@ -1,8 +1,6 @@
-package service.priv.service;
+package service.Private.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,8 +15,8 @@ import service.dto.request.RequestUpdStatusResultDto;
 import service.enumarated.State;
 import service.enumarated.StateAction;
 import service.enumarated.StatusUpd;
-import service.exception.model.ImpossibilityOfAction;
-import service.exception.model.NotFound;
+import service.exception.model.ImpossibilityOfActionException;
+import service.exception.model.NotFoundException;
 import service.mapper.EventMapper;
 import service.mapper.LocationMapper;
 import service.mapper.RequestMapper;
@@ -30,33 +28,25 @@ import service.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PrivServiceImpl implements PrivService {
-    private static final Logger log = LoggerFactory.getLogger(PrivServiceImpl.class);
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private EventMapper eventMapper;
-    @Autowired
-    private CategoriesRepository categoriesRepository;
-    @Autowired
-    private RequestRepository requestRepository;
-    @Autowired
-    private RequestMapper requestMapper;
-    @Autowired
-    private LocationMapper locationMapper;
-    @Autowired
-    private LocationRepository locationRepository;
+@RequiredArgsConstructor
+public class PrivateServiceImpl implements PrivateService {
+
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final CategoriesRepository categoriesRepository;
+    private final RequestRepository requestRepository;
+    private final RequestMapper requestMapper;
+    private final LocationMapper locationMapper;
+    private final LocationRepository locationRepository;
 
 
     @Override
     public List<EventShortDto> getEvent(Long userId, Integer from, Integer size) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.findByInitiatorId(userId, pageable).stream()
                 .map(eventMapper::toEventShort)
@@ -65,7 +55,7 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     public EventOutDto addEvent(EventInDto eventIn, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
         Event event = eventMapper.toEvent(eventIn);
         locationRepository.save(event.getLocation());
         event.setInitiator(user);
@@ -77,9 +67,9 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     public EventOutDto getEventWithId(Long userId, Long eventId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
-        Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
-                .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
+        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException("Event with" + eventId + " was not found"));
         return eventMapper.toOut(event);
     }
 
@@ -87,16 +77,16 @@ public class PrivServiceImpl implements PrivService {
     @Override
     @Transactional
     public EventOutDto pathEvent(Long userId, Long eventId, EventUpdDto eventUpd) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
-        Event event = Optional.ofNullable(eventRepository.findByIdAndInitiatorId(eventId, userId))
-                .orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
+        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException("Event with" + eventId + " was not found"));
 
         if (event.getState().equals(State.PUBLISHED)) {
-            throw new ImpossibilityOfAction("You cannot perform this action since this event is " + event.getState());
+            throw new ImpossibilityOfActionException("You cannot perform this action since this event is " + event.getState());
         }
 
         if (!event.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
-            throw new ImpossibilityOfAction("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
+            throw new ImpossibilityOfActionException("дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента");
         }
         event.setAnnotation(eventUpd.getAnnotation() != null ? eventUpd.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpd.getCategories() != null ? categoriesRepository.findById(eventUpd.getCategories()).orElse(event.getCategory()) : event.getCategory());
@@ -106,7 +96,7 @@ public class PrivServiceImpl implements PrivService {
         event.setParticipantLimit(eventUpd.getParticipantLimit() != null ? eventUpd.getParticipantLimit() : event.getParticipantLimit());
         event.setRequestModeration(eventUpd.getRequestModeration() != null ? eventUpd.getRequestModeration() : event.getRequestModeration());
         event.setTitle(eventUpd.getTitle() != null ? eventUpd.getTitle() : event.getTitle());
-        event.setLocation(eventUpd.getLocation() != null ? locationRepository.save(locationMapper.toEntity(eventUpd.getLocation())) : event.getLocation());
+        event.setLocation(eventUpd.getLocation() != null ? locationRepository.save(locationMapper.toLocation(eventUpd.getLocation())) : event.getLocation());
         if (eventUpd.getStateAction() != null && eventUpd.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
             event.setState(State.PENDING);
         }
@@ -118,8 +108,8 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     public List<RequestOutDto> getRequest(Long userId, Long eventId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with" + eventId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event with" + eventId + " was not found"));
         return requestRepository.findByEventId(eventId).stream()
                 .map(requestMapper::toRequestOut)
                 .collect(Collectors.toList());
@@ -128,11 +118,11 @@ public class PrivServiceImpl implements PrivService {
     @Override
     @Transactional
     public RequestUpdStatusResultDto pathRequest(Long userId, Long eventId, RequestUpdStatusDto requestUpdStatusDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with id " + userId + " was not found"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFound("Event with id " + eventId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with id " + userId + " was not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event with id " + eventId + " was not found"));
 
         if (event.getParticipantLimit() == 0 && !event.getRequestModeration()) {
-            throw new ImpossibilityOfAction("Для данного ивента не требуется подтверждения завяок ");
+            throw new ImpossibilityOfActionException("Для данного ивента не требуется подтверждения завяок ");
         }
 
         List<Request> requests = requestRepository.findAllById(requestUpdStatusDto.getRequestIds());
@@ -141,7 +131,7 @@ public class PrivServiceImpl implements PrivService {
 
         for (Request request : requests) {
             if (request.getStatus() != StatusUpd.PENDING) {
-                throw new ImpossibilityOfAction("Запрос находится не в ожидании ");
+                throw new ImpossibilityOfActionException("Запрос находится не в ожидании ");
             }
 
             if (requestUpdStatusDto.getStatus() == StatusUpd.CONFIRMED) {
@@ -159,7 +149,7 @@ public class PrivServiceImpl implements PrivService {
                         requestRepository.saveAll(pendingRequests);
                     }
                 } else {
-                    throw new ImpossibilityOfAction("Закончились места");
+                    throw new ImpossibilityOfActionException("Закончились места");
                 }
             } else if (requestUpdStatusDto.getStatus() == StatusUpd.REJECTED) {
                 request.setStatus(StatusUpd.REJECTED);
@@ -181,7 +171,7 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     public List<RequestOutDto> getRequestWithOurEvent(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
         return requestRepository.findByRequesterId(userId).stream()
                 .map(requestMapper::toRequestOut)
                 .collect(Collectors.toList());
@@ -190,20 +180,20 @@ public class PrivServiceImpl implements PrivService {
     @Override
     @Transactional
     public RequestOutDto addRequest(Long userId, Long eventId, LocalDateTime createDate) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with " + userId + " was not found"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ImpossibilityOfAction("Event with " + eventId + " was not found"));
-        Request requestFind = requestRepository.findByRequesterIdAndEventId(userId, eventId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with " + userId + " was not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ImpossibilityOfActionException("Event with " + eventId + " was not found"));
+        Request requestFind = requestRepository.findByRequesterIdAndEventId(userId, eventId).orElse(null);
         if (requestFind != null) {
-            throw new ImpossibilityOfAction("Нельзя добавлять потворный запрос");
+            throw new ImpossibilityOfActionException("Нельзя добавлять потворный запрос");
         }
         if (userId.equals(event.getInitiator().getId())) {
-            throw new ImpossibilityOfAction("Инициатор события не может добавить запрос на участие в своём событии");
+            throw new ImpossibilityOfActionException("Инициатор события не может добавить запрос на участие в своём событии");
         }
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new ImpossibilityOfAction("Нельзя участвовать в неопубликованном событии ");
+            throw new ImpossibilityOfActionException("Нельзя участвовать в неопубликованном событии ");
         }
         if (!event.getParticipantLimit().equals(0) && event.getParticipantLimit().equals(requestRepository.countRequest(event.getId()))) {
-            throw new ImpossibilityOfAction("у события достигнут лимит запросов на участие");
+            throw new ImpossibilityOfActionException("у события достигнут лимит запросов на участие");
         }
         Request requestCreate = new Request();
         requestCreate.setRequester(user);
@@ -220,8 +210,8 @@ public class PrivServiceImpl implements PrivService {
 
     @Override
     public RequestOutDto cancelRequest(Long userId, Long requestId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFound("User with" + userId + " was not found"));
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFound("Request with" + requestId + " was not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with" + userId + " was not found"));
+        Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request with" + requestId + " was not found"));
         request.setStatus(StatusUpd.CANCELED);
         return requestMapper.toRequestOut(request);
     }

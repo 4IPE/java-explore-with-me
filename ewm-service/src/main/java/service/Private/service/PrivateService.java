@@ -1,4 +1,4 @@
-package service.priv.service;
+package service.Private.service;
 
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
@@ -11,7 +11,7 @@ import service.dto.request.RequestUpdStatusResultDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface PrivService {
+public interface PrivateService {
     List<EventShortDto> getEvent(Long userId, Integer from, Integer size);
 
     EventOutDto addEvent(EventInDto event, Long userId);

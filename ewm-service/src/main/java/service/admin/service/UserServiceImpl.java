@@ -1,13 +1,12 @@
 package service.admin.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import service.dto.user.UserInDto;
 import service.dto.user.UserOutDto;
-import service.exception.model.NotFound;
+import service.exception.model.NotFoundException;
 import service.mapper.UserMapper;
 import service.model.User;
 import service.repository.UserRepository;
@@ -18,10 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserOutDto addUser(UserInDto userInDto) {
@@ -44,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFound("User with" + id + " was not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with" + id + " was not found"));
         userRepository.deleteById(id);
     }
 }

@@ -19,7 +19,7 @@ public class EventOutDto {
     private String eventDate;
     private Long id;
     private UserShortDto initiator;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     private Integer participantLimit;
     private LocalDateTime publishedOn;

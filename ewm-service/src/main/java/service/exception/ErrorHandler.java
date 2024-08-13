@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import service.exception.model.ErrorModel;
-import service.exception.model.ImpossibilityOfAction;
-import service.exception.model.NotFound;
+import service.exception.model.ImpossibilityOfActionException;
+import service.exception.model.NotFoundException;
 
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(ImpossibilityOfAction.class)
+    @ExceptionHandler(ImpossibilityOfActionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorModel impossibleAct(ImpossibilityOfAction ex) {
+    public ErrorModel impossibleAct(ImpossibilityOfActionException ex) {
         return new ErrorModel("409", "ImpossibilityOfAction", ex.getMessage());
     }
 
@@ -34,9 +34,9 @@ public class ErrorHandler {
         return new ErrorModel("409", "Message error", ex.getMessage());
     }
 
-    @ExceptionHandler(NotFound.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorModel notFound(NotFound ex) {
+    public ErrorModel notFound(NotFoundException ex) {
         return new ErrorModel("404", "NotFound", ex.getMessage());
     }
 

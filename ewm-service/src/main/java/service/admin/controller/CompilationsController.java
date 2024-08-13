@@ -3,7 +3,6 @@ package service.admin.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,8 +18,8 @@ import service.dto.compilations.CompilationsUpdDto;
 @Validated
 @Slf4j
 public class CompilationsController {
-    @Autowired
-    private CompilationsService compilationsService;
+
+    private final CompilationsService compilationsService;
 
     @PostMapping
     public ResponseEntity<CompilationsOutDto> addCompilations(@RequestBody @Valid CompilationsInDto compilations) {
@@ -35,7 +34,7 @@ public class CompilationsController {
     }
 
     @DeleteMapping("/{compId}")
-    public ResponseEntity<String> delComp(@PathVariable Long compId) {
+    public ResponseEntity<String> removeCompilations(@PathVariable Long compId) {
         compilationsService.delCompilations(compId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Подборка удален");
     }

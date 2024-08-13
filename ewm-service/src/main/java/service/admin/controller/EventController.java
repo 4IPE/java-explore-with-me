@@ -3,7 +3,6 @@ package service.admin.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +20,8 @@ import java.util.List;
 @Validated
 @Slf4j
 public class EventController {
-    @Autowired
-    private EventService eventService;
+
+    private final EventService eventService;
 
     @GetMapping
     public ResponseEntity<List<EventOutDto>> getEvent(@RequestParam(name = "users", required = false) List<Long> users,

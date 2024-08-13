@@ -3,7 +3,6 @@ package service.admin.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,8 +19,8 @@ import java.util.List;
 @Validated
 @Slf4j
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserOutDto> addUser(@RequestBody @Valid UserInDto user) {
@@ -36,7 +35,7 @@ public class UserController {
     }
 
     @DeleteMapping("{userId}")
-    public ResponseEntity<String> delUser(@PathVariable Long userId) {
+    public ResponseEntity<String> removeUser(@PathVariable Long userId) {
         userService.delUser(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Пользователь удален");
     }

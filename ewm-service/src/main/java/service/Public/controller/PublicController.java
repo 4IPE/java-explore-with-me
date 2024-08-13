@@ -1,20 +1,19 @@
-package service.pub.controller;
+package service.Public.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.clients.StatClient;
 import ru.practicum.dto.EndpointHitInDto;
+import service.Public.service.PublicService;
 import service.dto.categories.CategoriesOutDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.dto.event.EventOutDto;
-import service.pub.service.PubService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,22 +22,20 @@ import java.util.List;
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j
-public class PubController {
-    @Autowired
-    private PubService pubService;
-    @Autowired
-    private StatClient statClient;
+public class PublicController {
 
+    private final PublicService publicService;
+    private final StatClient statClient;
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategoriesOutDto>> getCategories(@RequestParam(defaultValue = "0") Integer from,
                                                                 @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok().body(pubService.getCategories(from, size));
+        return ResponseEntity.ok().body(publicService.getCategories(from, size));
     }
 
     @GetMapping("/categories/{catId}")
     public ResponseEntity<CategoriesOutDto> getCategoriesWithId(@PathVariable Long catId) {
-        return ResponseEntity.ok().body(pubService.getCategoriesWithId(catId));
+        return ResponseEntity.ok().body(publicService.getCategoriesWithId(catId));
     }
 
     @GetMapping("/events/{id}")
@@ -51,7 +48,7 @@ public class PubController {
         endpointHitInDto.setUri(request.getRequestURI());
         endpointHitInDto.setTimestamp(LocalDateTime.now());
         statClient.addHit(endpointHitInDto);
-        return ResponseEntity.ok().body(pubService.getEventWithId(id, request.getRequestURI(), statClient));
+        return ResponseEntity.ok().body(publicService.getEventWithId(id, request.getRequestURI(), statClient));
     }
 
     @GetMapping("/events")
@@ -76,18 +73,18 @@ public class PubController {
         endpointHitInDto.setUri(request.getRequestURI());
         endpointHitInDto.setTimestamp(LocalDateTime.now());
         statClient.addHit(endpointHitInDto);
-        return ResponseEntity.ok().body(pubService.getEvent(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, statClient));
+        return ResponseEntity.ok().body(publicService.getEvent(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, statClient));
     }
 
     @GetMapping("/compilations")
     public ResponseEntity<List<CompilationsOutDto>> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
                                                                     @RequestParam(defaultValue = "0") Integer from,
                                                                     @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok().body(pubService.getCompilations(pinned, from, size));
+        return ResponseEntity.ok().body(publicService.getCompilations(pinned, from, size));
     }
 
     @GetMapping("/compilations/{compId}")
     public ResponseEntity<CompilationsOutDto> getCompilations(@PathVariable Long compId) {
-        return ResponseEntity.ok().body(pubService.getCompilationsWithId(compId));
+        return ResponseEntity.ok().body(publicService.getCompilationsWithId(compId));
     }
 }

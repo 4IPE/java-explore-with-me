@@ -27,7 +27,7 @@ public class EventInDto {
     @ValidEventDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     @PositiveOrZero
     private Integer participantLimit;

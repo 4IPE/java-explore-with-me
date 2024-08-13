@@ -9,7 +9,7 @@ import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.dto.compilations.CompilationsUpdDto;
 import service.dto.event.EventOutDto;
-import service.exception.model.NotFound;
+import service.exception.model.NotFoundException;
 import service.model.Compilations;
 import service.model.Event;
 import service.repository.EventRepository;
@@ -43,7 +43,7 @@ public abstract class CompilationsMapper {
         }
         return eventsId.stream()
                 .map(id -> eventRepository.findById(id)
-                        .orElseThrow(() -> new NotFound("Event with " + id + " was not found")))
+                        .orElseThrow(() -> new NotFoundException("Event with " + id + " was not found")))
                 .collect(Collectors.toSet());
     }
 

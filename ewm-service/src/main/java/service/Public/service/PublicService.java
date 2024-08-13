@@ -1,4 +1,4 @@
-package service.pub.service;
+package service.Public.service;
 
 import ru.practicum.clients.StatClient;
 import service.dto.categories.CategoriesOutDto;
@@ -8,7 +8,7 @@ import service.dto.event.EventOutDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface PubService {
+public interface PublicService {
 
     List<CategoriesOutDto> getCategories(Integer from, Integer size);
 

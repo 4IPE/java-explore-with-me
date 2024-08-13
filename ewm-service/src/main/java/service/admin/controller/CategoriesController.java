@@ -3,7 +3,6 @@ package service.admin.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,8 +17,8 @@ import service.dto.categories.CategoriesOutDto;
 @Validated
 @Slf4j
 public class CategoriesController {
-    @Autowired
-    private CategoriesService categoriesService;
+
+    private final CategoriesService categoriesService;
 
     @PostMapping
     public ResponseEntity<CategoriesOutDto> addCategories(@RequestBody @Valid CategoriesInDto categories) {
@@ -34,7 +33,7 @@ public class CategoriesController {
     }
 
     @DeleteMapping("/{catId}")
-    public ResponseEntity<String> delCat(@PathVariable Long catId) {
+    public ResponseEntity<String> removeCategory(@PathVariable Long catId) {
         categoriesService.delCat(catId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Категория удален");
     }

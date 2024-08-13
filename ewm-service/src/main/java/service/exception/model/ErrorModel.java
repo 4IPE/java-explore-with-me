@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 public class ErrorModel {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private String status;
     private String reason;
     private String message;

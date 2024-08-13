@@ -1,7 +1,6 @@
 package ru.practicum.stats.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHitInDto;
@@ -18,10 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatServiceImpl implements StatService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    @Autowired
-    private StatRepository statRepository;
-    @Autowired
-    private StatMapper statMapper;
+    private final StatRepository statRepository;
+    private final StatMapper statMapper;
 
     @Override
     public void addHit(EndpointHitInDto endpointHitInDto) {

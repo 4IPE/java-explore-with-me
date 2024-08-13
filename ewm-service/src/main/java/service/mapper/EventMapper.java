@@ -10,7 +10,7 @@ import service.enumarated.State;
 import service.model.Event;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring", uses = {CategoriesMapper.class, UserMapper.class})
+        componentModel = "spring", uses = {CategoriesMapper.class, UserMapper.class, LocationMapper.class})
 public interface EventMapper {
     EventShortDto toEventShort(Event event);
 

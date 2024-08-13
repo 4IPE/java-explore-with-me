@@ -10,11 +10,12 @@ import service.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findByInitiatorId(Long id, Pageable pageable);
 
-    Event findByIdAndInitiatorId(Long eventId, Long userId);
+    Optional<Event> findByIdAndInitiatorId(Long eventId, Long userId);
 
     @Query("SELECT ev " +
             "FROM Event ev " +

@@ -6,7 +6,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import service.dto.categories.CategoriesInDto;
 import service.dto.categories.CategoriesOutDto;
-import service.exception.model.NotFound;
+import service.exception.model.NotFoundException;
 import service.model.Categories;
 import service.repository.CategoriesRepository;
 
@@ -25,6 +25,6 @@ public abstract class CategoriesMapper {
         if (categoryId == null) {
             return null;
         }
-        return categoriesRepository.findById(categoryId).orElseThrow(() -> new NotFound("Categories with " + categoryId + "don t found"));
+        return categoriesRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Categories with " + categoryId + "don t found"));
     }
 }

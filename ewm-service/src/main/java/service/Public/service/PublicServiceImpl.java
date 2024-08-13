@@ -1,8 +1,6 @@
-package service.pub.service;
+package service.Public.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,7 +12,7 @@ import service.dto.categories.CategoriesOutDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.dto.event.EventOutDto;
 import service.enumarated.State;
-import service.exception.model.NotFound;
+import service.exception.model.NotFoundException;
 import service.mapper.CategoriesMapper;
 import service.mapper.CompilationsMapper;
 import service.mapper.EventMapper;
@@ -31,24 +29,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PubServiceImpl implements PubService {
-    private static final Logger log = LoggerFactory.getLogger(PubServiceImpl.class);
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private EventMapper eventMapper;
-    @Autowired
-    private CategoriesRepository categoriesRepository;
-    @Autowired
-    private RequestRepository requestRepository;
-    @Autowired
-    private RequestMapper requestMapper;
-    @Autowired
-    private CategoriesMapper categoriesMapper;
-    @Autowired
-    private CompilationsRepository compilationsRepository;
-    @Autowired
-    private CompilationsMapper compilationsMapper;
+@RequiredArgsConstructor
+public class PublicServiceImpl implements PublicService {
+
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final CategoriesRepository categoriesRepository;
+    private final RequestRepository requestRepository;
+    private final RequestMapper requestMapper;
+    private final CategoriesMapper categoriesMapper;
+    private final CompilationsRepository compilationsRepository;
+    private final CompilationsMapper compilationsMapper;
 
 
     @Override
@@ -60,14 +51,14 @@ public class PubServiceImpl implements PubService {
     @Override
     public CategoriesOutDto getCategoriesWithId(Long catId) {
         return categoriesMapper.toOut(categoriesRepository.findById(catId)
-                .orElseThrow(() -> new NotFound("Categories with" + catId + "not found")));
+                .orElseThrow(() -> new NotFoundException("Categories with" + catId + "not found")));
     }
 
     @Override
     public EventOutDto getEventWithId(Long id, String uri, StatClient statClient) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFound("Event with" + id + " was not found"));
+        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event with" + id + " was not found"));
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new NotFound("Event with" + id + " was not found");
+            throw new NotFoundException("Event with" + id + " was not found");
         }
 
         List<EndpointHitOutDto> views = statClient.getStats(LocalDateTime.now().minusYears(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
@@ -161,7 +152,7 @@ public class PubServiceImpl implements PubService {
     @Transactional(readOnly = true)
     public CompilationsOutDto getCompilationsWithId(Long compId) {
         return compilationsMapper.toCompilationsOutDto(compilationsRepository.findByIdWithEvents(compId)
-                .orElseThrow(() -> new NotFound("Compilations with " + compId + "was not found")));
+                .orElseThrow(() -> new NotFoundException("Compilations with " + compId + "was not found")));
     }
 
 

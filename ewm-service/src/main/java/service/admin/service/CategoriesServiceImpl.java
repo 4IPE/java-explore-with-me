@@ -1,20 +1,21 @@
 package service.admin.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import service.dto.categories.CategoriesInDto;
 import service.dto.categories.CategoriesOutDto;
-import service.exception.model.NotFound;
+import service.exception.model.NotFoundException;
 import service.mapper.CategoriesMapper;
 import service.model.Categories;
 import service.repository.CategoriesRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CategoriesServiceImpl implements CategoriesService {
-    @Autowired
-    private CategoriesRepository repository;
-    @Autowired
-    private CategoriesMapper mapper;
+
+    private final CategoriesRepository repository;
+
+    private final CategoriesMapper mapper;
 
     @Override
     public CategoriesOutDto addCategories(CategoriesInDto categoriesIn) {
@@ -24,13 +25,13 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public void delCat(Long catId) {
-        Categories categories = repository.findById(catId).orElseThrow(() -> new NotFound("Категория с id: " + catId + " не была нйдена"));
+        Categories categories = repository.findById(catId).orElseThrow(() -> new NotFoundException("Категория с id: " + catId + " не была нйдена"));
         repository.deleteById(catId);
     }
 
     @Override
     public CategoriesOutDto updateCat(Long catId, CategoriesInDto categoriesInDto) {
-        Categories categories = repository.findById(catId).orElseThrow(() -> new NotFound("Категория с id: " + catId + " не была нйдена"));
+        Categories categories = repository.findById(catId).orElseThrow(() -> new NotFoundException("Категория с id: " + catId + " не была нйдена"));
         categories.setName(categoriesInDto.getName() != null ? categoriesInDto.getName() : categories.getName());
         return mapper.toOut(repository.save(categories));
     }
