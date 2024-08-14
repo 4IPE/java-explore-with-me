@@ -154,10 +154,8 @@ public class PublicServiceImpl implements PublicService {
     @Override
     @Transactional(readOnly = true)
     public CompilationsOutDto getCompilationsWithId(Long compId) {
-        CompilationsOutDto compilations = compilationsMapper.toCompilationsOutDto(compilationsRepository.findById(compId)
+        return compilationsMapper.toCompilationsOutDto(compilationsRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilations with " + compId + "was not found")));
-        log.info(compilations.getEvents().toString());
-        return compilations;
     }
 
 

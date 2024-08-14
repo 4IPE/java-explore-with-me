@@ -1,5 +1,7 @@
 package ru.practicum.stats.controller;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,9 @@ public class StatServerController {
                                                             @RequestParam(name = "end") String end,
                                                             @RequestParam(name = "uris", required = false) List<String> uris,
                                                             @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
+        @PastOrPresent
         String decodeStart = URLDecoder.decode(start, StandardCharsets.UTF_8);
+        @FutureOrPresent
         String decodeEnd = URLDecoder.decode(end, StandardCharsets.UTF_8);
         log.info("Обработка запроса на стороне сервера для получения статистики с параметрами");
         return ResponseEntity.ok().body(service.getStat(decodeStart, decodeEnd, uris, unique));
