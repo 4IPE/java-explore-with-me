@@ -1,22 +1,21 @@
 package service.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import service.model.Compilations;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CompilationsRepository extends JpaRepository<Compilations, Long> {
-    @Query("SELECT c FROM Compilations c LEFT JOIN FETCH c.events WHERE c.id = :id")
-    Optional<Compilations> findByIdWithEvents(@Param("id") Long id);
+    @EntityGraph(attributePaths = {"events"})
+    Optional<Compilations> findById(Long id);
 
-    @Query("SELECT c FROM Compilations c LEFT JOIN FETCH c.events")
-    List<Compilations> findAllWithEvents(Pageable pageable);
+    @EntityGraph(attributePaths = {"events"})
+    Page<Compilations> findAll(Pageable pageable);
 
-    @Query("SELECT c FROM Compilations c LEFT JOIN FETCH c.events WHERE c.pinned = :pinned")
-    List<Compilations> findByPinnedWithEvents(@Param("pinned") Boolean pinned, Pageable pageable);
+    @EntityGraph(attributePaths = {"events"})
+    Page<Compilations> findByPinned(Boolean pinned, Pageable pageable);
 }
 

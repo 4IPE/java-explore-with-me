@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,8 +15,13 @@ public class Compilations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "compilations", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private Set<Event> events;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "event_compilation",
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private Set<Event> events = new HashSet<>();
     @Column
     private Boolean pinned;
     @Column

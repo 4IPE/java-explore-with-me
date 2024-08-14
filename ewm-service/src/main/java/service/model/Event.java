@@ -50,12 +50,7 @@ public class Event {
     private String title;
     @Column
     private Integer views;
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "event_compilation",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "compilation_id")
-    )
+    @ManyToMany(mappedBy = "events")
     private Set<Compilations> compilations;
 
     @PrePersist

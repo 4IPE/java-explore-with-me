@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import service.dto.compilations.CompilationsInDto;
 import service.dto.compilations.CompilationsOutDto;
 import service.dto.compilations.CompilationsUpdDto;
-import service.dto.event.EventOutDto;
+import service.dto.event.EventShortDto;
 import service.exception.model.NotFoundException;
 import service.model.Compilations;
 import service.model.Event;
@@ -33,7 +33,7 @@ public abstract class CompilationsMapper {
     @Mapping(source = "events", target = "events", qualifiedByName = "toEvent")
     public abstract Compilations toCompilationsForUpd(CompilationsUpdDto compilationsDto);
 
-    @Mapping(source = "events", target = "events", qualifiedByName = "toEventOutDto")
+    @Mapping(source = "events", target = "events", qualifiedByName = "toEventShortDto")
     public abstract CompilationsOutDto toCompilationsOutDto(Compilations compilations);
 
     @Named("toEvent")
@@ -47,13 +47,13 @@ public abstract class CompilationsMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Named("toEventOutDto")
-    public Set<EventOutDto> toEventOutDto(Set<Event> events) {
+    @Named("toEventShortDto")
+    public Set<EventShortDto> toEventShortDto(Set<Event> events) {
         if (events == null || events.isEmpty()) {
             return new HashSet<>();
         }
         return events.stream()
-                .map(eventMapper::toOut)
+                .map(eventMapper::toEventShort)
                 .collect(Collectors.toSet());
     }
 }

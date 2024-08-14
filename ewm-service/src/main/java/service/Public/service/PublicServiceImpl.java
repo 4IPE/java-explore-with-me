@@ -1,6 +1,8 @@
 package service.Public.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PublicServiceImpl implements PublicService {
 
+    private static final Logger log = LoggerFactory.getLogger(PublicServiceImpl.class);
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final CategoriesRepository categoriesRepository;
@@ -140,19 +143,21 @@ public class PublicServiceImpl implements PublicService {
     public List<CompilationsOutDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (pinned == null) {
-            return compilationsRepository.findAllWithEvents(pageable).stream()
+            return compilationsRepository.findAll(pageable).stream()
                     .map(compilationsMapper::toCompilationsOutDto).collect(Collectors.toList());
 
         }
-        return compilationsRepository.findByPinnedWithEvents(pinned, pageable).stream()
+        return compilationsRepository.findByPinned(pinned, pageable).stream()
                 .map(compilationsMapper::toCompilationsOutDto).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public CompilationsOutDto getCompilationsWithId(Long compId) {
-        return compilationsMapper.toCompilationsOutDto(compilationsRepository.findByIdWithEvents(compId)
+        CompilationsOutDto compilations = compilationsMapper.toCompilationsOutDto(compilationsRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilations with " + compId + "was not found")));
+        log.info(compilations.getEvents().toString());
+        return compilations;
     }
 
 
