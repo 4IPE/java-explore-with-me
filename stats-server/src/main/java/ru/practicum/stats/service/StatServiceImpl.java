@@ -9,6 +9,7 @@ import ru.practicum.stats.mapper.StatMapper;
 import ru.practicum.stats.model.EndpointHit;
 import ru.practicum.stats.repository.StatRepository;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,6 +32,9 @@ public class StatServiceImpl implements StatService {
     public List<EndpointHitOutDto> getStat(String start, String end, List<String> uri, Boolean unq) {
         LocalDateTime startFormat = LocalDateTime.parse(start, FORMATTER);
         LocalDateTime endFormat = LocalDateTime.parse(end, FORMATTER);
+        if (startFormat.isAfter(LocalDateTime.now()) && endFormat.isBefore(LocalDateTime.now())) {
+            throw new DateTimeException("start: " + start + " end: " + end + " старт не должен быть в будущем,а конец в прошлом");
+        }
         List<EndpointHitOutDto> result = statRepository.findAllEndpointHitsWithoutUris(startFormat, endFormat);
         if (unq) {
             result = statRepository.findUniqueEndpointHitsWithoutUris(startFormat, endFormat);
