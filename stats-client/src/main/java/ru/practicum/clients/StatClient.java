@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.dto.EndpointHitInDto;
 import ru.practicum.dto.EndpointHitOutDto;
@@ -49,21 +48,9 @@ public class StatClient {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        try {
-            ResponseEntity<List<EndpointHitOutDto>> response = restTemplate.exchange(
-                    url, HttpMethod.GET, entity, new ParameterizedTypeReference<List<EndpointHitOutDto>>() {
-                    });
-
-            if (response.getBody() == null || response.getBody().isEmpty()) {
-                return new ResponseEntity<>(List.of(), HttpStatus.OK);
-            }
-
-            return response;
-
-        } catch (RestClientException ex) {
-            System.err.println("Error fetching stats: " + ex.getMessage());
-            return new ResponseEntity<>(List.of(), HttpStatus.OK);
-        }
+        return restTemplate.exchange(
+                url, HttpMethod.GET, entity, new ParameterizedTypeReference<List<EndpointHitOutDto>>() {
+                });
     }
 }
 
