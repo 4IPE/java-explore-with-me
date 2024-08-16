@@ -17,6 +17,7 @@ import service.model.Event;
 import service.repository.CategoriesRepository;
 import service.repository.EventRepository;
 import service.repository.LocationRepository;
+import service.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class EventServiceImpl implements EventService {
     private final CategoriesRepository categoriesRepository;
     private final LocationMapper locationMapper;
     private final LocationRepository locationRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public List<EventOutDto> getEvent(List<Long> users,
@@ -45,14 +47,16 @@ public class EventServiceImpl implements EventService {
         LocalDateTime rangeStartVal = rangeStart != null ? rangeStart : LocalDateTime.now().minusYears(10);
         LocalDateTime rangeEndVal = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(10);
         Pageable pageable = PageRequest.of(from / size, size);
+        List<EventOutDto> result = eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, statesString.stream().map(State::valueOf).collect(Collectors.toList()), categories, pageable)
+                .stream()
+                .map(eventMapper::toOut).toList();
         if (statesString.isEmpty()) {
-            return eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, null, categories, pageable)
+            result = eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, null, categories, pageable)
                     .stream()
                     .map(eventMapper::toOut).collect(Collectors.toList());
         }
-        return eventRepository.findAllEventWithState(rangeStartVal, rangeEndVal, users, statesString.stream().map(State::valueOf).collect(Collectors.toList()), categories, pageable)
-                .stream()
-                .map(eventMapper::toOut).collect(Collectors.toList());
+        result.forEach(event -> event.setConfirmedRequests(requestRepository.countRequest(event.getId())));
+        return result;
     }
 
     @Override
