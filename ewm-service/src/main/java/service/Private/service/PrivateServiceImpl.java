@@ -67,9 +67,7 @@ public class PrivateServiceImpl implements PrivateService {
         locationRepository.save(event.getLocation());
         event.setInitiator(user);
         event.setState(State.PENDING);
-        EventOutDto eventOutDto = eventMapper.toOut(eventRepository.save(event));
-        eventOutDto.setState(event.getState());
-        return eventOutDto;
+        return eventMapper.toOut(eventRepository.save(event));
     }
 
     @Override
