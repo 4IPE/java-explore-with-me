@@ -2,6 +2,7 @@ package service.Private.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import service.Private.service.PrivateService;
+import service.dto.comment.CommentInDto;
+import service.dto.comment.CommentOutDto;
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventShortDto;
@@ -32,7 +35,6 @@ import java.util.List;
 public class PrivateController {
 
     private final PrivateService privateService;
-
 
     @GetMapping("/events")
     public ResponseEntity<List<EventShortDto>> getEvent(@PathVariable Long userId,
@@ -97,6 +99,56 @@ public class PrivateController {
     public ResponseEntity<RequestOutDto> cancelRequest(@PathVariable Long userId,
                                                        @PathVariable Long requestId) {
         return ResponseEntity.ok().body(privateService.cancelRequest(userId, requestId));
+    }
+
+    @GetMapping("/event/{eventId}/comments")
+    public ResponseEntity<List<CommentOutDto>> getCommentWithEventId(@PathVariable Long userId,
+                                                                     @PathVariable Long eventId,
+                                                                     @PositiveOrZero
+                                                                     @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                                     @PositiveOrZero
+                                                                     @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return ResponseEntity.ok().body(privateService.getCommentWithEventId(userId, eventId, from, size));
+    }
+
+    @GetMapping("/comment")
+    public ResponseEntity<List<CommentOutDto>> getCommentWithUserId(@PathVariable Long userId,
+                                                                    @PositiveOrZero
+                                                                    @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                                    @PositiveOrZero
+                                                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return ResponseEntity.ok().body(privateService.getCommentWithUserId(userId, from, size));
+    }
+
+    @GetMapping("/event/{eventId}/comment/{comId}")
+    public ResponseEntity<CommentOutDto> getCommentWithId(@PathVariable Long userId,
+                                                          @PathVariable Long eventId,
+                                                          @PathVariable Long comId) {
+        return ResponseEntity.ok().body(privateService.getCommentWithId(userId, eventId, comId));
+    }
+
+
+    @PostMapping("/event/{eventId}/comment")
+    public ResponseEntity<CommentOutDto> addComment(@PathVariable Long userId,
+                                                    @PathVariable Long eventId,
+                                                    @Valid @RequestBody CommentInDto comment) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(privateService.addComment(userId, eventId, comment));
+    }
+
+    @PatchMapping("/event/{eventId}/comment/{comId}")
+    public ResponseEntity<CommentOutDto> pathComment(@PathVariable Long userId,
+                                                     @PathVariable Long eventId,
+                                                     @PathVariable Long comId,
+                                                     @Valid @RequestBody CommentInDto comment) {
+        return ResponseEntity.ok().body(privateService.pathComment(userId, eventId, comId, comment));
+    }
+
+    @DeleteMapping("/event/{eventId}/comment/{comId}")
+    public ResponseEntity<String> removeComment(@PathVariable Long userId,
+                                                @PathVariable Long eventId,
+                                                @PathVariable Long comId) {
+        privateService.delComment(userId, eventId, comId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Удаление прошло");
     }
 }
 

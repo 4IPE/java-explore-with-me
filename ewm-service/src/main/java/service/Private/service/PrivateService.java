@@ -1,5 +1,7 @@
 package service.Private.service;
 
+import service.dto.comment.CommentInDto;
+import service.dto.comment.CommentOutDto;
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventShortDto;
@@ -29,4 +31,31 @@ public interface PrivateService {
     RequestOutDto addRequest(Long userId, Long eventId, LocalDateTime createDate);
 
     RequestOutDto cancelRequest(Long userId, Long requestId);
+
+    CommentOutDto addComment(Long userId,
+                             Long eventId,
+                             CommentInDto commentInDto);
+
+    CommentOutDto pathComment(Long userId,
+                              Long eventId,
+                              Long commentId,
+                              CommentInDto commentInDto);
+
+    void delComment(Long userId,
+                    Long eventId,
+                    Long commentId);
+
+
+    List<CommentOutDto> getCommentWithEventId(Long userId,
+                                              Long eventId,
+                                              Integer from,
+                                              Integer size);
+
+    List<CommentOutDto> getCommentWithUserId(Long userId,
+                                             Integer from,
+                                             Integer size);
+
+    CommentOutDto getCommentWithId(Long userId,
+                                   Long eventId,
+                                   Long comId);
 }
