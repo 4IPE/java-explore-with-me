@@ -71,7 +71,7 @@ public class PublicServiceImpl implements PublicService {
         if (event.getConfirmedRequests().equals(count)) {
             event.setConfirmedRequests(count);
         }
-        return eventMapper.toOut(eventRepository.save(event));
+        return eventMapper.toOut(event);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class PublicServiceImpl implements PublicService {
                         (event.getAnnotation() != null && event.getAnnotation().toLowerCase().contains(searchText)) ||
                         (event.getDescription() != null && event.getDescription().toLowerCase().contains(searchText)) ||
                         (event.getTitle() != null && event.getTitle().toLowerCase().contains(searchText)))
-                .collect(Collectors.toList());
+                .toList();
 
         for (Event event : events) {
             String uri = "/events/" + event.getId();

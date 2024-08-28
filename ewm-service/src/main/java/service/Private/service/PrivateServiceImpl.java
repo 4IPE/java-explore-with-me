@@ -5,6 +5,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import service.dto.comment.CommentInDto;
+import service.dto.comment.CommentOutDto;
 import service.dto.event.EventInDto;
 import service.dto.event.EventOutDto;
 import service.dto.event.EventShortDto;
@@ -17,15 +19,18 @@ import service.enumarated.StateAction;
 import service.enumarated.StatusUpd;
 import service.exception.model.ImpossibilityOfActionException;
 import service.exception.model.NotFoundException;
+import service.mapper.CommentMapper;
 import service.mapper.EventMapper;
 import service.mapper.LocationMapper;
 import service.mapper.RequestMapper;
+import service.model.Comment;
 import service.model.Event;
 import service.model.Request;
 import service.model.User;
 import service.repository.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +47,8 @@ public class PrivateServiceImpl implements PrivateService {
     private final RequestMapper requestMapper;
     private final LocationMapper locationMapper;
     private final LocationRepository locationRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
 
     @Override
@@ -60,9 +67,7 @@ public class PrivateServiceImpl implements PrivateService {
         locationRepository.save(event.getLocation());
         event.setInitiator(user);
         event.setState(State.PENDING);
-        EventOutDto eventOutDto = eventMapper.toOut(eventRepository.save(event));
-        eventOutDto.setState(event.getState());
-        return eventOutDto;
+        return eventMapper.toOut(eventRepository.save(event));
     }
 
     @Override
@@ -214,5 +219,86 @@ public class PrivateServiceImpl implements PrivateService {
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request with" + requestId + " was not found"));
         request.setStatus(StatusUpd.CANCELED);
         return requestMapper.toRequestOut(request);
+    }
+
+    @Override
+    public CommentOutDto addComment(Long userId,
+                                    Long eventId,
+                                    CommentInDto commentInDto) {
+        User commentator = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event don t found id: " + eventId));
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new ImpossibilityOfActionException("Не можете оставлять коментарии на неопубликованный ивент");
+        }
+        Request request = requestRepository.findByRequesterIdAndEventId(userId, eventId).orElseThrow(() -> new NotFoundException("Вы не можете оставлять комментарии , где ваша заявка не была оставлена"));
+        if (!request.getStatus().equals(StatusUpd.CONFIRMED)) {
+            throw new ImpossibilityOfActionException("Не можете оставлять коментарии если ваша заявка не одобрена ");
+        }
+        Comment comment = commentMapper.toComment(commentInDto);
+        comment.setCommentator(commentator);
+        comment.setEvent(event);
+        comment.setCreated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        return commentMapper.toCommentOut(commentRepository.save(comment));
+    }
+
+    @Override
+    public CommentOutDto pathComment(Long userId,
+                                     Long eventId,
+                                     Long commentId,
+                                     CommentInDto commentInDto) {
+        User activeUser = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event don t found id: " + eventId));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Event don t found id: " + commentId));
+
+        if (!comment.getEvent().getId().equals(event.getId()) || !comment.getCommentator().getId().equals(activeUser.getId())) {
+            throw new ImpossibilityOfActionException("Ты не можешь редактировать данный комментарий");
+        }
+
+        comment.setText(commentInDto.getText());
+        return commentMapper.toCommentOut(commentRepository.save(comment));
+    }
+
+    @Override
+    public void delComment(Long userId,
+                           Long eventId,
+                           Long commentId) {
+        User activeUser = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event don t found id: " + eventId));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment don t found id: " + commentId));
+
+        if (!comment.getEvent().getId().equals(event.getId()) || !comment.getCommentator().getId().equals(activeUser.getId())) {
+            throw new ImpossibilityOfActionException("Ты не можешь удалять данный комментарий");
+
+        }
+        commentRepository.deleteById(commentId);
+    }
+
+    @Override
+    public List<CommentOutDto> getCommentWithEventId(Long userId,
+                                                     Long eventId,
+                                                     Integer from,
+                                                     Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        User activeUser = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event don t found id: " + eventId));
+        return commentRepository.findByEventId(eventId, pageable).stream().map(commentMapper::toCommentOut).toList();
+    }
+
+    @Override
+    public List<CommentOutDto> getCommentWithUserId(Long userId,
+                                                    Integer from,
+                                                    Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        User commentator = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        return commentRepository.findByCommentatorId(userId, pageable).stream().map(commentMapper::toCommentOut).toList();
+    }
+
+    @Override
+    public CommentOutDto getCommentWithId(Long userId,
+                                          Long eventId,
+                                          Long comId) {
+        User commentator = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User don t found id: " + userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event don t found id: " + eventId));
+        return commentMapper.toCommentOut(commentRepository.findByIdAndCommentatorIdAndEventId(comId, userId, eventId).orElseThrow(() -> new NotFoundException("Comment with id: " + comId + "don t found")));
     }
 }
